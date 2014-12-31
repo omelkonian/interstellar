@@ -10,7 +10,7 @@
 Model *md;
 static float rotx = 0.0;
 static float roty = 0.0;
-static bool animate = true;
+static bool animate = false;
 
 using namespace std;
 
@@ -22,16 +22,17 @@ void Render()
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity();
 	
-  //glRotatef(rotx, 1, 0, 0);
+  glTranslatef(0, 0, -100);
+  glRotatef(rotx, 1, 0, 0);
+  glRotatef(roty, 0, 1, 0);
 
-
-  glTranslatef(0.0, 0.0, -30.0);
-  glColor3f(0.3, 0.2, 0.9);                            // Set drawing colour
-  glutSolidTorus(5.0, 10.0, 1000, 2540);
 
   //glColor3f(0.3, 0.2, 0.9);                            // Set drawing colour
   //DisplayModel(md);  
   
+  glColor3f(1.0, 0.0, 0.0);                            // Set drawing colour
+  glutSolidTeapot(20.0);
+
   glutSwapBuffers();             // All drawing commands applied to the 
                                  // hidden buffer, so now, bring forward
                                  // the hidden buffer and hide the visible one
@@ -55,8 +56,10 @@ void Resize(int w, int h)
 
 void Idle()
 {
-	if(animate)
-		rotx+=0.4;
+	/*if (animate) {
+		rotx += 0.4;
+		roty += 0.4;
+	}*/
 
 	glutPostRedisplay();
 }
@@ -80,16 +83,16 @@ void SpecialKeyboard(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		rotx += 1;
+		rotx += 5;
 		break;
 	case GLUT_KEY_DOWN:
-		rotx -= 1;
+		rotx -= 5;
 		break;
 	case GLUT_KEY_LEFT:
-		roty += 1;
+		roty += 5;
 		break;
 	case GLUT_KEY_RIGHT:
-		roty -= 1;
+		roty -= 5;
 		break;
 	}
 	glutPostRedisplay();
