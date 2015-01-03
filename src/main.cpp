@@ -26,8 +26,8 @@ int main(int argc, char* argv[])
   
   // Define the main window size and initial position 
   // ( upper left corner, boundaries included )
-  glutInitWindowSize(480,480);
-  glutInitWindowPosition(50,50);
+  glutInitWindowSize(1200,600);
+  glutInitWindowPosition(0,0);
   
   // Create and label the main window
   glutCreateWindow("Interstellar");

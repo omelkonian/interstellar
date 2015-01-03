@@ -6,6 +6,9 @@
  */
 
 #include "Face.h"
+#include <iostream>
+
+using namespace std;
 
 Face::Face(int v1, int v2, int v3) {
 	this->vtx[0] = v1;
@@ -22,9 +25,15 @@ int Face::getV2() {
 }
 
 int Face::getV3() {
-	return this->vtx[1];
+	return this->vtx[2];
 }
 
 Face::~Face() {
 }
 
+void Face::print() {
+	cout << "_________Printing Face_________" << endl;
+	cout << "V1: " << this->vtx[0] << endl;
+	cout << "V2: " << this->vtx[1] << endl;
+	cout << "V3: " << this->vtx[2] << endl;
+}

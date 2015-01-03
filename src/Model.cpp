@@ -7,6 +7,9 @@
 
 #include "Model.h"
 #include <cstdlib>
+#include <iostream>
+
+using namespace std;
 
 Model::Model(int vertices, int faces) {
 	this->vertices = vertices;
@@ -38,4 +41,12 @@ Point** Model::getObjPoints() {
 }
 Face** Model::getObjFaces() {
 	return this->obj_faces;
+}
+
+void Model::print() {
+	cout << "________Printing Model____________ " << endl;
+	for (int i = 0; i < this->vertices; i++)
+		this->getObjPoints()[i]->print();
+	for (int i = 0; i < this->faces; i++)
+		this->getObjFaces()[i]->print();
 }

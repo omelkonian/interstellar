@@ -6,6 +6,9 @@
  */
 
 #include "Point.h"
+#include <iostream>
+
+using namespace std;
 
 Point::Point() {}
 
@@ -29,3 +32,9 @@ float Point::getZ(){
 
 Point::~Point() {}
 
+void Point::print() {
+	cout << "________Printing Point__________" << endl;
+	cout << "X: " << this->x << endl;
+	cout << "Y: " << this->y << endl;
+	cout << "Z: " << this->z << endl;
+}
