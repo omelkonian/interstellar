@@ -18,6 +18,8 @@ public:
 	int getV1();
 	int getV2();
 	int getV3();
+
+	void print();
 };
 
 #endif /* FACE_H_ */

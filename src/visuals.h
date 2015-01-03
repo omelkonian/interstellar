@@ -26,7 +26,7 @@ void Idle();
 Model* ReadFile();
 //Function for reading a model file
 
-void DisplayModel(Model);
+void DisplayModel(Model*);
 // Function for displaying a model
 
 void Keyboard(unsigned char key,int x,int y);

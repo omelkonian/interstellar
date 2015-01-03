@@ -21,6 +21,7 @@ public:
 	float getY();
 	float getZ();
 
+	void print();
 };
 
 #endif /* POINT_H_ */

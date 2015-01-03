@@ -28,6 +28,8 @@ public:
 
 	Point** getObjPoints();
 	Face** getObjFaces();
+
+	void print();
 };
 
 #endif /* MODEL_H_ */
