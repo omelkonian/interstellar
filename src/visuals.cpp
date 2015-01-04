@@ -33,6 +33,7 @@ void Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
 	// and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
 	glTranslatef(0, 0, -1);
@@ -123,7 +124,20 @@ void Mouse(int button, int state, int x, int y)
 void Setup()
 {
 	md = new Model("resources/asteroid_2.obj");
-	// TODO Lighting 
+	//return;
+	GLfloat mat_specular[] = { 500.0, 500.0, 500.0, 1.0 };
+	GLfloat mat_shininess[] = { 0.2 };
+	GLfloat light_position[] = { 500.0, 500.0, 500.0, 0.0 };
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glShadeModel(GL_SMOOTH);
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	//glEnable(GL_DEPTH_TEST);
 }
 
 void MenuSelect(int choice)

@@ -18,9 +18,9 @@ class Model {
 	//std::vector<Face> obj_faces;
 	GLfloat* _vertices;
 	GLfloat* _normals;
-	GLint* _faces;
+	GLuint* _faces;
 	GLfloat* _texels;
-	GLint * _indices;
+	GLuint * _indices;
 	int vertices;
 	int faces;
 	int normals;

@@ -20,8 +20,8 @@ Model::Model(const char * file) {
 	this->_vertices = (GLfloat*)malloc(this->vertices * sizeof(GLfloat) * 3);
 	this->_texels = (GLfloat*)malloc(this->texels* sizeof(GLfloat) * 2);
 	this->_normals = (GLfloat*)malloc(this->normals * sizeof(GLfloat) * 3);
-	this->_faces = (GLint*)malloc(this->faces * sizeof(GLint) * 9);
-	this->_indices = (GLint*)malloc(this->faces * sizeof(GLint) * 3);
+	this->_faces = (GLuint*)malloc(this->faces * sizeof(GLuint) * 9);
+	this->_indices = (GLuint*)malloc(this->faces * sizeof(GLuint) * 3);
 	this->load_obj(file);
 	//this->print();
 }
@@ -79,8 +79,8 @@ int Model::load_obj(const char * filename) {
 	GLfloat * $vertice = this->_vertices;
 	GLfloat * $normal = this->_normals;
 	GLfloat * $texel = this->_texels;
-	GLint * $face = this->_faces;
-	GLint * $index = this->_indices;
+	GLuint * $face = this->_faces;
+	GLuint * $index = this->_indices;
 
 	ifstream obj_file(filename, ifstream::in);
 	while (getline(obj_file, line)) {
@@ -131,25 +131,27 @@ int Model::load_obj(const char * filename) {
 }
 
 void Model::draw() {
-	//glScalef(0.1, 0.1, 0.1);
-	//glEnableClientState(GL_NORMAL_ARRAY);
-	//glEnableClientState(GL_COLOR_ARRAY);
+	glScalef(5, 5, 5);
+	
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_INDEX_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	//glNormalPointer(GL_FLOAT, 0, this->_normals);
+	glNormalPointer(GL_FLOAT, 0, this->_normals);
+	//glIndexPointer(GL_INT, 3, this->_faces);
 	//glColorPointer(3, GL_FLOAT, 0, colors1);
 	glVertexPointer(3, GL_FLOAT, 0, this->_vertices);
 
 	glPushMatrix();
 	//glTranslatef(2, 2, 0);                  // move to upper-right corner
 
-	//glDrawElements(GL_TRIANGLES, this->faces * 3, GL_INT, this->_indices);
-	glDrawArrays(GL_TRIANGLES, 0, this->faces * 3);
+	glDrawElements(GL_TRIANGLES, this->faces * 3, GL_UNSIGNED_INT, this->_indices);
+	//glDrawArrays(GL_TRIANGLES, 0, this->faces * 3);
 
 	glPopMatrix();
 
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
-	//glDisableClientState(GL_COLOR_ARRAY);
-	//glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
@@ -170,6 +172,6 @@ void Model::print() {
 		printf(" %d/%d/%d\n", this->_faces[9 * i + 6], this->_faces[9 * i + 7], this->_faces[9 * i + 8]);
 	}
 	for (int i = 0; i < this->faces; i++) {
-		printf("i %d %d %d\n", this->_indices[3 * i], this->_indices[3 * i + 1], this->_indices[3 * i + 2]);
+		//printf("i %d %d %d\n", this->_indices[3 * i], this->_indices[3 * i + 1], this->_indices[3 * i + 2]);
 	}
 }
