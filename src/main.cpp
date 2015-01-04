@@ -1,7 +1,7 @@
-#include <stdio.h>     // - Just for some ASCII messages
-#include "../gl/glut.h"   // - An interface and windows 
-                       //   management library
 #include "visuals.h"   // Header file for our OpenGL functions
+#include <cstdio>
+#include <cstdlib>
+#include "../gl/glut.h"   // - An interface and windows 
 
 
 

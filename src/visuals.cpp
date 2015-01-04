@@ -35,7 +35,7 @@ void Render()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(0, 0, -100);
+	glTranslatef(0, 0, -1);
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
@@ -43,7 +43,7 @@ void Render()
 
 	glScalef(0.05, 0.05, 0.05);
 	glColor3f(0.54, 0.27, 0.07);   // Saddle Brown
-	DisplayModel(md);  
+	md->draw();
 
 	glutSwapBuffers();             // All drawing commands applied to the 
 							   	  // hidden buffer, so now, bring forward
@@ -122,7 +122,7 @@ void Mouse(int button, int state, int x, int y)
 
 void Setup()
 {
-	md = ReadFile();
+	md = new Model("resources/asteroid_2.obj");
 	// TODO Lighting 
 }
 
@@ -135,7 +135,7 @@ void MenuSelect(int choice)
 
 }
 
-Model* ReadFile()
+/* Model* ReadFile()
 {
 	cout << "Reading object file." << endl;
 
@@ -206,13 +206,13 @@ Model* ReadFile()
 	obj_file.close();
 
 	return md;
-}
+} 
 
 void DisplayModel(Model *md)
 {
 	glPushMatrix();
 
-	glBegin(GL_TRIANGLES);
+	glBegin(GL_TRIANGLE_STRIP);
 
 	Point **objPoints = md->getObjPoints();
 	Face **objFaces = md->getObjFaces();
@@ -230,4 +230,4 @@ void DisplayModel(Model *md)
 
 	glEnd();
 	glPopMatrix();
-}
+} */
