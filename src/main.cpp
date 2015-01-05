@@ -4,7 +4,10 @@
 #include <cstdlib>
 #include "../gl/glut.h"   // - An interface and windows 
 
+#include <Windows.h>
+#include <mmsystem.h>
 
+using namespace std;
 
 ////////////////// State Variables ////////////////////////
 
@@ -52,6 +55,8 @@ int main(int argc, char* argv[])
 	// attach the menu to the right button
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
+	// Start song loop.
+	//PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 
 	//Enter main event handling loop
 	glutMainLoop();

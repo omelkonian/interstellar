@@ -12,10 +12,13 @@ public:
 	GLdouble outerRadiusMin;
 	GLdouble outerRadiusMax;
 
+	bool addition;
+
 	Sun();
 	virtual ~Sun();
 
 	void draw();
+	void animate();
 
 	void print();
 };

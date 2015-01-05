@@ -9,6 +9,8 @@ Sun::Sun() {
 	this->outerRadiusMin = 28.0;
 	this->outerRadiusMax = 30.0;
 	this->outerRadius = this->outerRadiusMin;
+
+	this->addition = true;
 }
 
 	
@@ -54,6 +56,11 @@ void Sun::draw() {
 	glPopMatrix();
 
 	glDisable(GL_COLOR_MATERIAL);
+}
+
+void Sun::animate() {
+	this->outerRadius += (this->addition) ? 0.01 : -0.01;
+	this->addition = (this->outerRadius >= this->outerRadiusMax) ? (false) : ((this->outerRadius <= this->outerRadiusMin) ? (true) : (this->addition));
 }
 
 void Sun::print() {

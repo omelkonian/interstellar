@@ -22,7 +22,6 @@ static float zoomOut = 0.0;
 
 // Booleans for animating (rotating) and addition (true means that we increase radius)
 static bool animate = false;
-static bool addition = true;
 
 using namespace std;
 
@@ -124,8 +123,7 @@ void Resize(int w, int h)
 void Idle()
 {
 	// Sun animation.
-	sun->outerRadius += (addition) ? 0.01 : -0.01;
-	addition = (sun->outerRadius >= sun->outerRadiusMax) ? (false) : ((sun->outerRadius <= sun->outerRadiusMin) ? (true) : (addition));
+	sun->animate();
 
 	// Left-click animation.
 	if (animate) {
