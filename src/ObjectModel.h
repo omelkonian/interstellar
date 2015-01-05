@@ -8,6 +8,9 @@ public:
 	ObjectModel(const char * file);
 	~ObjectModel();
 
+	void draw();
+	void print();
+
 private:
 	GLfloat* _vertices;
 	GLfloat* _normals;
@@ -22,8 +25,5 @@ private:
 	//helping functions
 	int preproccessFile(const char * filename);
 	int load_obj(const char * filename);
-
-	void draw();
-	void print();
 };
 

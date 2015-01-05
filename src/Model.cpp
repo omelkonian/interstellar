@@ -44,5 +44,11 @@ void Model::draw() {
 	this->doPhysics();
 	printf("pos = {%f,%f,%f}\n", this->position.x, this->position.y, this->position.z);
 	glTranslatef(this->position.x, this->position.y, this->position.z);
-	//TODO rotation math
+	glRotatef(this->rposition.x, 1, 0, 0);
+	glRotatef(this->rposition.y, 0, 1, 0);
+	glRotatef(this->rposition.z, 0, 0, 1);
+}
+
+void Model::print() {
+	cout << "I'm an object" << endl;
 }

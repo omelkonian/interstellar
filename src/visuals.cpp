@@ -12,6 +12,7 @@
 // The models of the scene.
 Model *md;
 Sun *sun;
+Spaceship *ship;
 
 // Variables for rotating (up, down, left, right) and zooming in/out (i, o)
 static float rotx = 0.0;
@@ -52,7 +53,6 @@ void Render()
 
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
-
 	DrawAxes();
 
 	// Asteroid.
@@ -71,9 +71,9 @@ void Render()
 	glScalef(0.05, 0.05, 0.05);
 	md->draw();
 	glPopMatrix();
-
+	ship->draw();
 	glDisable(GL_COLOR_MATERIAL);
-
+	
 
 
 	// Cube for testing lighting.
@@ -95,8 +95,8 @@ void Render()
 
 	glDisable(GL_COLOR_MATERIAL);
 	*/
-	
-	
+
+
 	sun->draw();
 
 	glutSwapBuffers();             // All drawing commands applied to the 
@@ -189,12 +189,14 @@ void Mouse(int button, int state, int x, int y)
 void Setup()
 {
 	sun = new Sun();
+	ship = new Spaceship();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+	ship->position = { 0.0f, 0.0f, -20.0f };
 	md = new ObjectModel("resources/asteroid_2.obj");
 	md->position = { 0.0f, 0.0f, -100.0f };
 	md->speed = { 0.0f, -0.000f, 0.005f };
+	md->rspeed = { 0.0f, -0.050f, 0.05f };
 
 
 	// Create light components
@@ -202,7 +204,7 @@ void Setup()
 	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
 	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
-	
+
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);

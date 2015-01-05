@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "ObjectModel.h"
 #include "Sun.h"
+#include "Spaceship.h"
 
 
 //-------- Functions --------------------------------

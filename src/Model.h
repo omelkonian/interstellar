@@ -35,6 +35,7 @@ public:
 	//abstract methods
 	//method draw has implementation and should be called first in derived implementation.
 	virtual void draw() = 0;
-	virtual void print() = 0;
+	virtual void print();
+	virtual void animate() {};
 };
 
