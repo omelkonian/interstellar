@@ -10,9 +10,11 @@
 
 // Faces are triangles only.
 class Face {
-	int vtx[3];
 public:
-	Face(int, int, int);
+	int vertices[3];
+	int texels[3];
+	int normals[3];
+	Face(int[3], int[3], int[3]);
 	virtual ~Face();
 
 	int getV1();

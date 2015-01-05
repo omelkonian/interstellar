@@ -7,11 +7,14 @@
 
 #ifndef POINT_H_
 #define POINT_H_
+#include <cstdio>
+#include <cstdlib>
+#include "../gl/glut.h"
 
 class Point {
-	float x;
-	float y;
-	float z;
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
 public:
 	Point();
 	Point(float, float, float);

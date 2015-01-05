@@ -5,59 +5,36 @@
  *      Author: Orestis Melkonian
  */
 
-#ifndef MODEL_H_
-#define MODEL_H_
+#pragma once
 
-#include "Point.h"
-#include "Face.h"
-#include <vector>
+#include "../gl/glm/glm.hpp"
 #include "../gl/glut.h"
+#include "../gl/SOIL.h"
 
 class Model {
-	//std::vector<Point> obj_points;
-	//std::vector<Face> obj_faces;
-	GLfloat* _vertices;
-	GLfloat* _normals;
-	GLuint* _faces;
-	GLfloat* _texels;
-	GLuint * _indices;
-	int vertices;
-	int faces;
-	int normals;
-	int texels;
-	Point position;
-	float rotation[3]; // XYZ rotation angles
+private:
+	long timeOld;
 
-	//helping functions
-	int preproccessFile(const char * filename);
-	int load_obj(const char * filename);
 public:
-	Model(int, int);
-	Model(const char * file);
+	//linear variables
+	glm::vec3 position;
+	glm::vec3 speed;
+	glm::vec3 acceleration;
+	//rotational variables
+	glm::vec3 rposition;
+	glm::vec3 rspeed;
+	glm::vec3 racceleration;
+
+	//############## methods #####################
+	//default constructor
+	Model();
+	//constructor with initial linear values
+	Model(glm::vec3 pos, glm::vec3 speed);
 	virtual ~Model();
-	//operations
-
-	//sets the rotation 
-	int setRotate(float x, float y, float z);
-	//increments the rotation
-	int rotate(float x, float y, float z);
-	//moves the object
-	int move(Point where);
-	//sets the object position
-	int place(Point where);
-	//draws the object
-	void draw();
-	//getters setters
-	int getVertices();
-	void setVertices(int);
-
-	int getFaces();
-	void setFaces(int);
-
-	Point* getObjPoints();
-	Face* getObjFaces();
-
-	void print();
+	void doPhysics();
+	//abstract methods
+	//method draw has implementation and should be called first in derived implementation.
+	virtual void draw() = 0;
+	virtual void print() = 0;
 };
 
-#endif /* MODEL_H_ */

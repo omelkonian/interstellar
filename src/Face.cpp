@@ -10,30 +10,18 @@
 
 using namespace std;
 
-Face::Face(int v1, int v2, int v3) {
-	this->vtx[0] = v1;
-	this->vtx[1] = v2;
-	this->vtx[2] = v3;
-}
-
-int Face::getV1() {
-	return this->vtx[0];
-}
-
-int Face::getV2() {
-	return this->vtx[1];
-}
-
-int Face::getV3() {
-	return this->vtx[2];
+Face::Face(int vertices[3], int texels[3], int normals[3]) {
+	memcpy(this->vertices, vertices, 3 * sizeof(int));
+	memcpy(this->texels, texels, 3 * sizeof(int));
+	memcpy(this->normals, normals, 3 * sizeof(int));
 }
 
 Face::~Face() {
 }
 
-void Face::print() {
+/*void Face::print() {
 	cout << "_________Printing Face_________" << endl;
 	cout << "V1: " << this->vtx[0] << endl;
 	cout << "V2: " << this->vtx[1] << endl;
 	cout << "V3: " << this->vtx[2] << endl;
-}
+} */

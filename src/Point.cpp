@@ -4,9 +4,8 @@
  *  Created on: 30 Δεκ 2014
  *      Author: Orestis Melkonian
  */
-
-#include "Point.h"
 #include <iostream>
+#include "Point.h"
 
 using namespace std;
 

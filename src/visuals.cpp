@@ -47,8 +47,8 @@ void Render()
 	md->draw();
 
 	glutSwapBuffers();             // All drawing commands applied to the 
-							   	  // hidden buffer, so now, bring forward
-								 // the hidden buffer and hide the visible one
+	// hidden buffer, so now, bring forward
+	// the hidden buffer and hide the visible one
 }
 
 //-----------------------------------------------------------
@@ -62,17 +62,18 @@ void Resize(int w, int h)
 	// Setup viewing volume
 
 	glMatrixMode(GL_PROJECTION);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
-	gluPerspective(60.0, (float)w / (float)h, 1.0, 500.0);
+	gluPerspective(60.0, (float)w / (float)h, 1.0, 50000.0f);
 }
 
 void Idle()
 {
-	/*if (animate) {
-		rotx += 0.4;
-		roty += 0.4;
-		}*/
+	if (animate) {
+		rotx += 0.04;
+		roty += 0.04;
+	}
 
 	glutPostRedisplay();
 }
@@ -123,21 +124,25 @@ void Mouse(int button, int state, int x, int y)
 
 void Setup()
 {
-	md = new Model("resources/asteroid_2.obj");
+	md = new ObjectModel("resources/asteroid_2.obj");
+	md->position = { 0.0f, 0.0f, -100.0f };
+	md->speed = { 0.0f, -0.000f, 0.001f };
 	//return;
-	GLfloat mat_specular[] = { 500.0, 500.0, 500.0, 1.0 };
-	GLfloat mat_shininess[] = { 0.2 };
-	GLfloat light_position[] = { 500.0, 500.0, 500.0, 0.0 };
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_SMOOTH);
-
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
+	// Somewhere in the initialization part of your program… 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+
+	// Create light components
+	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+	GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	GLfloat position[] = { -55.5f, -55.0f, -54.0f, 1.0f };
+	// Assign created components to GL_LIGHT0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+	//glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
 void MenuSelect(int choice)
@@ -151,97 +156,97 @@ void MenuSelect(int choice)
 
 /* Model* ReadFile()
 {
-	cout << "Reading object file." << endl;
+cout << "Reading object file." << endl;
 
-	ifstream obj_file("resources/asteroid.obj");                
+ifstream obj_file("resources/asteroid.obj");
 
-	if (obj_file.fail()) {
-		cout << "ERROR: Could not open .obj file." << endl;
-		exit(1);
-	}
-
-
-	cout << "SUCCESS: Opened .obj file." << endl;
-
-	int vertices, faces;
-	obj_file >> vertices;                               // Get the number of vertices
-	obj_file >> faces;									// Get the number of faces
-	cout << "Vertices: " << vertices << endl;
-	cout << "Faces: " << faces << endl;
-
-	Model *md = new Model(vertices, faces);
-
-	for (int i = 0; i < vertices; i++){                        // Get the vertex coordinates
-		char type;
-		obj_file >> type;
-		float x, y, z;
-		obj_file >> x;
-		obj_file >> y;
-		obj_file >> z;
-
-		md->getObjPoints()[i] = new Point(x, y, z);
-		//md->getObjPoints()[i]->print();
-	}
-	cout << "Read points." << endl;
-
-	string line;
-	int i = 0;
-	while (getline(obj_file, line)) {									// Get the face structure
-		//cout << "line: " << line << endl;
-		if (line[0] != 'f')
-			continue;
-		istringstream iss(line);
-		string token;
-		getline(iss, token, ' ');
-		getline(iss, token, ' ');
-		getline(iss, token, ' ');
-		istringstream iss1(token);
-		string token1;
-		getline(iss1, token1, '/');
-		//cout << "token1: " << token1 << endl;
-		getline(iss, token, ' ');
-		istringstream iss2(token);
-		string token2;
-		getline(iss2, token2, '/');
-		//cout << "token2: " << token2 << endl;
-		getline(iss, token, ' ');
-		istringstream iss3(token);
-		string token3;
-		getline(iss3, token3, '/');
-		//cout << "token3: " << token3 << endl;
-
-		md->getObjFaces()[i] = new Face(atoi(token1.c_str()), atoi(token2.c_str()), atoi(token3.c_str()));
-		//md->getObjFaces()[i]->print();
-		i++;
-	}
-	cout << "Read faces." << endl;
+if (obj_file.fail()) {
+cout << "ERROR: Could not open .obj file." << endl;
+exit(1);
+}
 
 
-	obj_file.close();
+cout << "SUCCESS: Opened .obj file." << endl;
 
-	return md;
-} 
+int vertices, faces;
+obj_file >> vertices;                               // Get the number of vertices
+obj_file >> faces;									// Get the number of faces
+cout << "Vertices: " << vertices << endl;
+cout << "Faces: " << faces << endl;
+
+Model *md = new Model(vertices, faces);
+
+for (int i = 0; i < vertices; i++){                        // Get the vertex coordinates
+char type;
+obj_file >> type;
+float x, y, z;
+obj_file >> x;
+obj_file >> y;
+obj_file >> z;
+
+md->getObjPoints()[i] = new Point(x, y, z);
+//md->getObjPoints()[i]->print();
+}
+cout << "Read points." << endl;
+
+string line;
+int i = 0;
+while (getline(obj_file, line)) {									// Get the face structure
+//cout << "line: " << line << endl;
+if (line[0] != 'f')
+continue;
+istringstream iss(line);
+string token;
+getline(iss, token, ' ');
+getline(iss, token, ' ');
+getline(iss, token, ' ');
+istringstream iss1(token);
+string token1;
+getline(iss1, token1, '/');
+//cout << "token1: " << token1 << endl;
+getline(iss, token, ' ');
+istringstream iss2(token);
+string token2;
+getline(iss2, token2, '/');
+//cout << "token2: " << token2 << endl;
+getline(iss, token, ' ');
+istringstream iss3(token);
+string token3;
+getline(iss3, token3, '/');
+//cout << "token3: " << token3 << endl;
+
+md->getObjFaces()[i] = new Face(atoi(token1.c_str()), atoi(token2.c_str()), atoi(token3.c_str()));
+//md->getObjFaces()[i]->print();
+i++;
+}
+cout << "Read faces." << endl;
+
+
+obj_file.close();
+
+return md;
+}
 
 void DisplayModel(Model *md)
 {
-	glPushMatrix();
+glPushMatrix();
 
-	glBegin(GL_TRIANGLE_STRIP);
+glBegin(GL_TRIANGLE_STRIP);
 
-	Point **objPoints = md->getObjPoints();
-	Face **objFaces = md->getObjFaces();
-	for (int i = 0; i < md->getFaces(); i++)
-	{
-		Face *face = objFaces[i];
-		Point *v1 = objPoints[face->getV1() - 1];
-		Point *v2 = objPoints[face->getV2() - 1];
-		Point *v3 = objPoints[face->getV3() - 1];
+Point **objPoints = md->getObjPoints();
+Face **objFaces = md->getObjFaces();
+for (int i = 0; i < md->getFaces(); i++)
+{
+Face *face = objFaces[i];
+Point *v1 = objPoints[face->getV1() - 1];
+Point *v2 = objPoints[face->getV2() - 1];
+Point *v3 = objPoints[face->getV3() - 1];
 
-		glVertex3f(v1->getX(), v1->getY(), v1->getZ());
-		glVertex3f(v2->getX(), v2->getY(), v2->getZ());
-		glVertex3f(v3->getX(), v3->getY(), v3->getZ());
-	}
+glVertex3f(v1->getX(), v1->getY(), v1->getZ());
+glVertex3f(v2->getX(), v2->getY(), v2->getZ());
+glVertex3f(v3->getX(), v3->getY(), v3->getZ());
+}
 
-	glEnd();
-	glPopMatrix();
+glEnd();
+glPopMatrix();
 } */
