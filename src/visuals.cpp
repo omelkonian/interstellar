@@ -9,10 +9,19 @@
 #include "../gl/glut.h"   // - An interface and windows management library
 #include "visuals.h"   // Header file for our OpenGL functions
 
+// The models of the scene.
 Model *md;
+Sun *sun;
+
+// Variables for rotating (up, down, left, right) and zooming in/out (i, o)
 static float rotx = 0.0;
 static float roty = 0.0;
+static float zoomIn = 0.0;
+static float zoomOut = 0.0;
+
+// Booleans for animating (rotating) and addition (true means that we increase radius)
 static bool animate = false;
+static bool addition = true;
 
 using namespace std;
 
@@ -36,15 +45,59 @@ void Render()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
-	glTranslatef(0, 0, -1);
+	glTranslatef(0, 0, -100);
+
+	glTranslatef(0, 0, zoomIn);
+	glTranslatef(0, 0, -zoomOut);
+
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
 	DrawAxes();
 
+	// Asteroid.
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColor4f(0.1, 0.1, 0.1, 1);
+	float mat_specular[] = { 0.992157, 0.941176, 0.807843, 1.0 };
+	float mat_emission[] = { 0.0, 0.0, 0.0, 1.0 };
+	float shininess = 10;
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
+
+	glPushMatrix();
 	glScalef(0.05, 0.05, 0.05);
-	glColor3f(0.54, 0.27, 0.07);   // Saddle Brown
 	md->draw();
+	glPopMatrix();
+
+	glDisable(GL_COLOR_MATERIAL);
+
+
+
+	// Cube for testing lighting.
+	/*
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColor4f(0.1, 0.1, 0.1, 1);
+	float mat_specular[] = { 0.992157, 0.941176, 0.807843, 1.0 };
+	float mat_emission[] = { 0.0, 0.0, 0.0, 1.0 };
+	float shininess = 10;
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
+
+	glPushMatrix();
+	glutSolidCube(10);
+	glPopMatrix();
+
+	glDisable(GL_COLOR_MATERIAL);
+	*/
+	
+	
+	sun->draw();
 
 	glutSwapBuffers();             // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
@@ -62,14 +115,19 @@ void Resize(int w, int h)
 	// Setup viewing volume
 
 	glMatrixMode(GL_PROJECTION);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
-	gluPerspective(60.0, (float)w / (float)h, 1.0, 50000.0f);
+	gluPerspective(60.0, (float)w / (float)h, 1.0, 5000.0f);
 }
 
 void Idle()
 {
+	// Sun animation.
+	sun->outerRadius += (addition) ? 0.01 : -0.01;
+	addition = (sun->outerRadius >= sun->outerRadiusMax) ? (false) : ((sun->outerRadius <= sun->outerRadiusMin) ? (true) : (addition));
+
+	// Left-click animation.
 	if (animate) {
 		rotx += 0.04;
 		roty += 0.04;
@@ -82,6 +140,12 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+	case 'i':
+		zoomIn += 10;
+		break;
+	case 'o':
+		zoomOut += 10;
+		break;
 	case 'q':
 		exit(0);
 		break;
@@ -124,25 +188,29 @@ void Mouse(int button, int state, int x, int y)
 
 void Setup()
 {
+	sun = new Sun();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	md = new ObjectModel("resources/asteroid_2.obj");
 	md->position = { 0.0f, 0.0f, -100.0f };
-	md->speed = { 0.0f, -0.000f, 0.001f };
-	//return;
-	// Somewhere in the initialization part of your program… 
+	md->speed = { 0.0f, -0.000f, 0.005f };
+
+
+	// Create light components
+	GLfloat ambientLight[] = { 0.3, 0.3, 0.3, 1.0 };
+	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
+	
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+	glLightfv(GL_LIGHT0, GL_POSITION, position);
+
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
-
-	// Create light components
-	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
-	GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	GLfloat position[] = { -55.5f, -55.0f, -54.0f, 1.0f };
-	// Assign created components to GL_LIGHT0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-	//glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
 void MenuSelect(int choice)
@@ -153,100 +221,3 @@ void MenuSelect(int choice)
 	}
 
 }
-
-/* Model* ReadFile()
-{
-cout << "Reading object file." << endl;
-
-ifstream obj_file("resources/asteroid.obj");
-
-if (obj_file.fail()) {
-cout << "ERROR: Could not open .obj file." << endl;
-exit(1);
-}
-
-
-cout << "SUCCESS: Opened .obj file." << endl;
-
-int vertices, faces;
-obj_file >> vertices;                               // Get the number of vertices
-obj_file >> faces;									// Get the number of faces
-cout << "Vertices: " << vertices << endl;
-cout << "Faces: " << faces << endl;
-
-Model *md = new Model(vertices, faces);
-
-for (int i = 0; i < vertices; i++){                        // Get the vertex coordinates
-char type;
-obj_file >> type;
-float x, y, z;
-obj_file >> x;
-obj_file >> y;
-obj_file >> z;
-
-md->getObjPoints()[i] = new Point(x, y, z);
-//md->getObjPoints()[i]->print();
-}
-cout << "Read points." << endl;
-
-string line;
-int i = 0;
-while (getline(obj_file, line)) {									// Get the face structure
-//cout << "line: " << line << endl;
-if (line[0] != 'f')
-continue;
-istringstream iss(line);
-string token;
-getline(iss, token, ' ');
-getline(iss, token, ' ');
-getline(iss, token, ' ');
-istringstream iss1(token);
-string token1;
-getline(iss1, token1, '/');
-//cout << "token1: " << token1 << endl;
-getline(iss, token, ' ');
-istringstream iss2(token);
-string token2;
-getline(iss2, token2, '/');
-//cout << "token2: " << token2 << endl;
-getline(iss, token, ' ');
-istringstream iss3(token);
-string token3;
-getline(iss3, token3, '/');
-//cout << "token3: " << token3 << endl;
-
-md->getObjFaces()[i] = new Face(atoi(token1.c_str()), atoi(token2.c_str()), atoi(token3.c_str()));
-//md->getObjFaces()[i]->print();
-i++;
-}
-cout << "Read faces." << endl;
-
-
-obj_file.close();
-
-return md;
-}
-
-void DisplayModel(Model *md)
-{
-glPushMatrix();
-
-glBegin(GL_TRIANGLE_STRIP);
-
-Point **objPoints = md->getObjPoints();
-Face **objFaces = md->getObjFaces();
-for (int i = 0; i < md->getFaces(); i++)
-{
-Face *face = objFaces[i];
-Point *v1 = objPoints[face->getV1() - 1];
-Point *v2 = objPoints[face->getV2() - 1];
-Point *v3 = objPoints[face->getV3() - 1];
-
-glVertex3f(v1->getX(), v1->getY(), v1->getZ());
-glVertex3f(v2->getX(), v2->getY(), v2->getZ());
-glVertex3f(v3->getX(), v3->getY(), v3->getZ());
-}
-
-glEnd();
-glPopMatrix();
-} */

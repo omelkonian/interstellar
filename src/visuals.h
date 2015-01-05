@@ -7,6 +7,7 @@
 #include "Face.h"
 #include "Model.h"
 #include "ObjectModel.h"
+#include "Sun.h"
 
 
 //-------- Functions --------------------------------

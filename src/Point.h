@@ -5,8 +5,8 @@
  *      Author: Orestis Melkonian
  */
 
-#ifndef POINT_H_
-#define POINT_H_
+#pragma once
+
 #include <cstdio>
 #include <cstdlib>
 #include "../gl/glut.h"
@@ -27,4 +27,3 @@ public:
 	void print();
 };
 
-#endif /* POINT_H_ */

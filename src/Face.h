@@ -5,8 +5,7 @@
  *      Author: Orestis Melkonian
  */
 
-#ifndef FACE_H_
-#define FACE_H_
+#pragma once
 
 // Faces are triangles only.
 class Face {
@@ -23,5 +22,3 @@ public:
 
 	void print();
 };
-
-#endif /* FACE_H_ */
