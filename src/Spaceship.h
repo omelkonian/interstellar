@@ -7,7 +7,7 @@ class Spaceship :
 public:
 	Spaceship();
 	~Spaceship();
-	
+
 	//methods
 	void draw();
 	void animate();

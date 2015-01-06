@@ -10,18 +10,21 @@
 #include "visuals.h"   // Header file for our OpenGL functions
 
 // The models of the scene.
-Model *md;
+Asteroid *md;
 Sun *sun;
 Spaceship *ship;
 
-// Variables for rotating (up, down, left, right) and zooming in/out (i, o)
+// Variables for rotating (up, down, left, right) and zooming in/out (i, o).
 static float rotx = 0.0;
 static float roty = 0.0;
 static float zoomIn = 0.0;
 static float zoomOut = 0.0;
 
-// Booleans for animating (rotating) and addition (true means that we increase radius)
+// Booleans for animating (rotating) and pausing.
 static bool animate = false;
+static bool paused = false;
+
+static long oldTime = glutGet(GLUT_ELAPSED_TIME);
 
 using namespace std;
 
@@ -29,15 +32,19 @@ void DrawAxes()
 {
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_LINES);
-	glVertex2f(-100.0, 0.0);
-	glVertex2f(100.0, 0.0);
-	glVertex2f(0.0, -100.0);
-	glVertex2f(0.0, 100.0);
+	glVertex2f(-1000.0, 0.0);
+	glVertex2f(1000.0, 0.0);
+	glVertex2f(0.0, -1000.0);
+	glVertex2f(0.0, 1000.0);
+	glVertex3f(0.0, 0.0, -1000.0);
+	glVertex3f(0.0, 0.0, 1000.0);
 	glEnd();
 }
 
 void Render()
 {
+	if (paused)
+		return;
 	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
 	// and the depth buffer
@@ -54,7 +61,7 @@ void Render()
 	glRotatef(roty, 0, 1, 0);
 	DrawAxes();
 
-	// Asteroid.
+	// Asteroid && ship.
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glColor4f(0.1, 0.1, 0.1, 1);
@@ -66,35 +73,10 @@ void Render()
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
-	glPushMatrix();
-	glScalef(0.05, 0.05, 0.05);
 	md->draw();
-	glPopMatrix();
 	ship->draw();
-	glDisable(GL_COLOR_MATERIAL);
-	
-
-
-	// Cube for testing lighting.
-	/*
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	glColor4f(0.1, 0.1, 0.1, 1);
-	float mat_specular[] = { 0.992157, 0.941176, 0.807843, 1.0 };
-	float mat_emission[] = { 0.0, 0.0, 0.0, 1.0 };
-	float shininess = 10;
-
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
-
-	glPushMatrix();
-	glutSolidCube(10);
-	glPopMatrix();
 
 	glDisable(GL_COLOR_MATERIAL);
-	*/
-
 
 	sun->draw();
 
@@ -122,6 +104,16 @@ void Resize(int w, int h)
 
 void Idle()
 {
+	if (paused)
+		return;
+
+	long curTime = glutGet(GLUT_ELAPSED_TIME);
+	if (curTime - oldTime > 2000) {
+		// generate asteroid
+		// randomize
+		oldTime = curTime;
+	}
+
 	// Sun animation.
 	sun->animate();
 
@@ -144,7 +136,22 @@ void Keyboard(unsigned char key, int x, int y)
 	case 'o':
 		zoomOut += 10;
 		break;
-	case 'q':
+	case 'w':
+		ship->position[1] += 1.5;
+		break;
+	case 's':
+		ship->position[1] -= 1.5;
+		break;
+	case 'a':
+		ship->position[0] -= 1.5;
+		break;
+	case 'd':
+		ship->position[0] += 1.5;
+		break;
+	case SPACEBAR:
+		paused = !paused;
+		break;
+	case ESCAPE:
 		exit(0);
 		break;
 	default:
@@ -186,14 +193,19 @@ void Mouse(int button, int state, int x, int y)
 
 void Setup()
 {
-	sun = new Sun();
-	ship = new Spaceship();
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
+	glClearDepth(1);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	ship->position = { 0.0f, 0.0f, -20.0f };
-	md = new ObjectModel("resources/asteroid_2.obj");
-	md->position = { 0.0f, 0.0f, -100.0f };
-	md->speed = { 0.0f, -0.000f, 0.005f };
+
+	sun = new Sun();
+	ship = new Spaceship();
+	md = new Asteroid("resources/asteroid_2.obj");
+	md->randomize();
+
+	md->speed = { 0.0f, -0.000f, 0.01f };
 	md->rspeed = { 0.0f, -0.050f, 0.05f };
 
 

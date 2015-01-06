@@ -103,9 +103,6 @@ int ObjectModel::load_obj(const char * filename) {
 }
 
 void ObjectModel::draw() {
-	//glScalef(0.01, 0.01, 0.01);
-	glScalef(5, 5, 5);
-	
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_INDEX_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -114,17 +111,12 @@ void ObjectModel::draw() {
 	//glColorPointer(3, GL_FLOAT, 0, colors1);
 	glVertexPointer(3, GL_FLOAT, 0, this->_vertices);
 
-	glPushMatrix();
-	//glTranslatef(2, 2, 0);                  // move to upper-right corner
 	Model::draw();
 	glDrawElements(GL_TRIANGLES, this->faces * 3, GL_UNSIGNED_INT, this->_indices);
-	//glDrawArrays(GL_TRIANGLES, 0, this->faces * 3);
 
-	glPopMatrix();
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
-
 }
 
 void ObjectModel::print() {

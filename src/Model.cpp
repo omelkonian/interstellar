@@ -42,7 +42,7 @@ void Model::doPhysics() {
 
 void Model::draw() {
 	this->doPhysics();
-	printf("pos = {%f,%f,%f}\n", this->position.x, this->position.y, this->position.z);
+	//printf("Model_pos = {%f,%f,%f}\n", this->position.x, this->position.y, this->position.z);
 	glTranslatef(this->position.x, this->position.y, this->position.z);
 	glRotatef(this->rposition.x, 1, 0, 0);
 	glRotatef(this->rposition.y, 0, 1, 0);

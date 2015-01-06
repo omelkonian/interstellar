@@ -22,6 +22,8 @@ private:
 	int normals;
 	int texels;
 
+	
+
 	//helping functions
 	int preproccessFile(const char * filename);
 	int load_obj(const char * filename);

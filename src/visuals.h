@@ -3,12 +3,16 @@
 #define BLUE 3
 #define WHITE 4
 
+#define SPACEBAR 32
+#define ESCAPE 27
+
 #include "Point.h"
 #include "Face.h"
 #include "Model.h"
 #include "ObjectModel.h"
 #include "Sun.h"
 #include "Spaceship.h"
+#include "Asteroid.h"
 
 
 //-------- Functions --------------------------------

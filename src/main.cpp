@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "../gl/glut.h"   // - An interface and windows 
 
+#include <time.h>
 #include <Windows.h>
 #include <mmsystem.h>
 
@@ -15,6 +16,8 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	srand(time(NULL));
+
 	// initialize GLUT library state
 	glutInit(&argc, argv);
 
