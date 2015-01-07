@@ -8,11 +8,13 @@
 
 #include "../gl/glut.h"   // - An interface and windows management library
 #include "visuals.h"   // Header file for our OpenGL functions
+#include "Defines.h"
 
 // The models of the scene.
 Asteroid *md;
 Sun *sun;
 Spaceship *ship;
+StarManager *stars;
 
 // Variables for rotating (up, down, left, right) and zooming in/out (i, o).
 static float rotx = 0.0;
@@ -41,25 +43,60 @@ void DrawAxes()
 	glEnd();
 }
 
+void DrawBoundingBox()
+{
+	glColor3f(0.6, 0.6, 0.6);
+	glBegin(GL_LINES);
+	glVertex3f(X_MAX, Y_MAX, Z_MAX);
+	glVertex3f(X_MAX, Y_MIN, Z_MAX);
+	glVertex3f(X_MAX, Y_MAX, Z_MAX);
+	glVertex3f(X_MAX, Y_MAX, Z_MIN);
+	glVertex3f(X_MAX, Y_MAX, Z_MAX);
+	glVertex3f(X_MIN, Y_MAX, Z_MAX);
+
+	glVertex3f(X_MAX, Y_MIN, Z_MIN);
+	glVertex3f(X_MAX, Y_MIN, Z_MAX);
+	glVertex3f(X_MAX, Y_MIN, Z_MIN);
+	glVertex3f(X_MAX, Y_MAX, Z_MIN);
+	glVertex3f(X_MAX, Y_MIN, Z_MIN);
+	glVertex3f(X_MIN, Y_MIN, Z_MIN);
+
+	glVertex3f(X_MIN, Y_MAX, Z_MIN);
+	glVertex3f(X_MIN, Y_MIN, Z_MIN);
+	glVertex3f(X_MIN, Y_MAX, Z_MIN);
+	glVertex3f(X_MIN, Y_MAX, Z_MAX);
+	glVertex3f(X_MIN, Y_MAX, Z_MIN);
+	glVertex3f(X_MAX, Y_MAX, Z_MIN);
+
+	glVertex3f(X_MIN, Y_MIN, Z_MAX);
+	glVertex3f(X_MIN, Y_MAX, Z_MAX);
+	glVertex3f(X_MIN, Y_MIN, Z_MAX);
+	glVertex3f(X_MIN, Y_MIN, Z_MIN);
+	glVertex3f(X_MIN, Y_MIN, Z_MAX);
+	glVertex3f(X_MAX, Y_MIN, Z_MAX);
+
+	glEnd();
+}
+
 void Render()
 {
 	if (paused)
 		return;
-	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
-	// and the depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
-	glTranslatef(0, 0, -100);
+	glTranslatef(0, 0, -30); // Move camera a bit back.
 
 	glTranslatef(0, 0, zoomIn);
 	glTranslatef(0, 0, -zoomOut);
 
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
+
 	DrawAxes();
+	//DrawBoundingBox();
 
 	// Asteroid && ship.
 	glEnable(GL_COLOR_MATERIAL);
@@ -78,8 +115,12 @@ void Render()
 
 	glDisable(GL_COLOR_MATERIAL);
 
+	// Background.
 	sun->draw();
+	
+	stars->draw();
 
+	
 	glutSwapBuffers();             // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
 	// the hidden buffer and hide the visible one
@@ -107,10 +148,10 @@ void Idle()
 	if (paused)
 		return;
 
+	// Update stars each second.
 	long curTime = glutGet(GLUT_ELAPSED_TIME);
-	if (curTime - oldTime > 2000) {
-		// generate asteroid
-		// randomize
+	if (curTime - oldTime > 1000) {
+		stars->update();
 		oldTime = curTime;
 	}
 
@@ -200,12 +241,12 @@ void Setup()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	stars = new StarManager();
 	sun = new Sun();
 	ship = new Spaceship();
 	md = new Asteroid("resources/asteroid_2.obj");
 	md->randomize();
-
-	md->speed = { 0.0f, -0.000f, 0.01f };
+	md->speed = { 0.0f, -0.000f, 0.1f };
 	md->rspeed = { 0.0f, -0.050f, 0.05f };
 
 
@@ -223,6 +264,11 @@ void Setup()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
+
+	glEnable(GL_CULL_FACE);
+	//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
+	glFrontFace(GL_CCW);
+
 }
 
 void MenuSelect(int choice)
@@ -232,4 +278,9 @@ void MenuSelect(int choice)
 		break;
 	}
 
+}
+
+float randFloat(float a, float b)
+{
+	return ((b - a)*((float)rand() / RAND_MAX)) + a;
 }

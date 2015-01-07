@@ -1,10 +1,4 @@
-#define RED 1
-#define GREEN 2
-#define BLUE 3
-#define WHITE 4
-
-#define SPACEBAR 32
-#define ESCAPE 27
+#pragma once
 
 #include "Point.h"
 #include "Face.h"
@@ -13,6 +7,8 @@
 #include "Sun.h"
 #include "Spaceship.h"
 #include "Asteroid.h"
+#include "Star.h"
+#include "StarManager.h"
 
 
 //-------- Functions --------------------------------
@@ -47,3 +43,4 @@ void Mouse(int button,int state,int x,int y);
 
 void MenuSelect(int choice);
 
+float randFloat(float min, float max);

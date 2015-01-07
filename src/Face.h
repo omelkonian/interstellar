@@ -1,10 +1,3 @@
-/*
- * Face.h
- *
- *  Created on: 30 Δεκ 2014
- *      Author: Orestis Melkonian
- */
-
 #pragma once
 
 // Faces are triangles only.

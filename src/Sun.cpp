@@ -18,8 +18,10 @@ Sun::Sun() {
 Sun::~Sun() {}
 
 void Sun::draw() {
+	glPushMatrix();
+
 	glScalef(1.0, 1.1, 1.0);
-	glTranslatef(this->position[0], this->position[1], this->position[2]);
+	glTranslatef(this->position.x, this->position.y, this->position.z);
 	
 	//Inner Sphere	
 	glEnable(GL_COLOR_MATERIAL);
@@ -33,9 +35,7 @@ void Sun::draw() {
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
-	glPushMatrix();
 	glutSolidSphere(this->innerRadius, 10000.0, 10000.0);
-	glPopMatrix();
 
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -51,11 +51,11 @@ void Sun::draw() {
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess2);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission2);
 
-	glPushMatrix();
-	glutSolidSphere(this->outerRadius, 10000.0, 10000.0);
-	glPopMatrix();
+	glutSolidSphere(this->outerRadius, 10000.0, 10000.0);	
 
 	glDisable(GL_COLOR_MATERIAL);
+
+	glPopMatrix();
 }
 
 void Sun::animate() {
