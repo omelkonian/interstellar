@@ -1,6 +1,9 @@
 #pragma once
+
 #include "Model.h"
 #include "ObjectModel.h"
+#include "AABB.h"
+
 class Spaceship :
 	public Model
 {
@@ -11,6 +14,8 @@ public:
 	//methods
 	void draw();
 	void animate();
+
+	AABB* getAABB();
 
 private:
 	ObjectModel *ship;

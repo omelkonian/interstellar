@@ -10,6 +10,8 @@
 #include "visuals.h"   // Header file for our OpenGL functions
 #include "Defines.h"
 
+AABB *globalBox;
+
 // The models of the scene.
 Asteroid *md;
 Sun *sun;
@@ -43,45 +45,11 @@ void DrawAxes()
 	glEnd();
 }
 
-void DrawBoundingBox()
-{
-	glColor3f(0.6, 0.6, 0.6);
-	glBegin(GL_LINES);
-	glVertex3f(X_MAX, Y_MAX, Z_MAX);
-	glVertex3f(X_MAX, Y_MIN, Z_MAX);
-	glVertex3f(X_MAX, Y_MAX, Z_MAX);
-	glVertex3f(X_MAX, Y_MAX, Z_MIN);
-	glVertex3f(X_MAX, Y_MAX, Z_MAX);
-	glVertex3f(X_MIN, Y_MAX, Z_MAX);
-
-	glVertex3f(X_MAX, Y_MIN, Z_MIN);
-	glVertex3f(X_MAX, Y_MIN, Z_MAX);
-	glVertex3f(X_MAX, Y_MIN, Z_MIN);
-	glVertex3f(X_MAX, Y_MAX, Z_MIN);
-	glVertex3f(X_MAX, Y_MIN, Z_MIN);
-	glVertex3f(X_MIN, Y_MIN, Z_MIN);
-
-	glVertex3f(X_MIN, Y_MAX, Z_MIN);
-	glVertex3f(X_MIN, Y_MIN, Z_MIN);
-	glVertex3f(X_MIN, Y_MAX, Z_MIN);
-	glVertex3f(X_MIN, Y_MAX, Z_MAX);
-	glVertex3f(X_MIN, Y_MAX, Z_MIN);
-	glVertex3f(X_MAX, Y_MAX, Z_MIN);
-
-	glVertex3f(X_MIN, Y_MIN, Z_MAX);
-	glVertex3f(X_MIN, Y_MAX, Z_MAX);
-	glVertex3f(X_MIN, Y_MIN, Z_MAX);
-	glVertex3f(X_MIN, Y_MIN, Z_MIN);
-	glVertex3f(X_MIN, Y_MIN, Z_MAX);
-	glVertex3f(X_MAX, Y_MIN, Z_MAX);
-
-	glEnd();
-}
-
 void Render()
 {
-	if (paused)
+	if (paused) 
 		return;
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -96,7 +64,7 @@ void Render()
 	glRotatef(roty, 0, 1, 0);
 
 	DrawAxes();
-	//DrawBoundingBox();
+	//globalBox->draw();
 
 	// Asteroid && ship.
 	glEnable(GL_COLOR_MATERIAL);
@@ -111,7 +79,14 @@ void Render()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
 	md->draw();
+	AABB *astBox = md->getAABB();
+	//astBox->draw();	
+	delete astBox;
+	
 	ship->draw();
+	AABB *shipBox = ship->getAABB();
+	//shipBox->draw();
+	delete shipBox;
 
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -120,7 +95,6 @@ void Render()
 	
 	stars->draw();
 
-	
 	glutSwapBuffers();             // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
 	// the hidden buffer and hide the visible one
@@ -148,6 +122,10 @@ void Idle()
 	if (paused)
 		return;
 
+	// Collision detection.
+	if (ship->getAABB()->intersects(md->getAABB()))
+		paused = true;
+
 	// Update stars each second.
 	long curTime = glutGet(GLUT_ELAPSED_TIME);
 	if (curTime - oldTime > 1000) {
@@ -169,6 +147,9 @@ void Idle()
 
 void Keyboard(unsigned char key, int x, int y)
 {
+	if (key >= 65 && key <= 90) // accept CAPS also
+		key += 32;
+
 	switch (key)
 	{
 	case 'i':
@@ -241,14 +222,14 @@ void Setup()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
 	stars = new StarManager();
 	sun = new Sun();
 	ship = new Spaceship();
 	md = new Asteroid("resources/asteroid_2.obj");
 	md->randomize();
-	md->speed = { 0.0f, -0.000f, 0.1f };
+	md->speed = { 0.0f, -0.000f, 0.05f };
 	md->rspeed = { 0.0f, -0.050f, 0.05f };
-
 
 	// Create light components
 	GLfloat ambientLight[] = { 0.3, 0.3, 0.3, 1.0 };

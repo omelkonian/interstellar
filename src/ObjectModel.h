@@ -11,7 +11,7 @@ public:
 	void draw();
 	void print();
 
-private:
+protected:
 	GLfloat* _vertices;
 	GLfloat* _normals;
 	GLuint* _faces;

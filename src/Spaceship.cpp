@@ -31,6 +31,11 @@ void Spaceship::draw()
 	glPopMatrix();
 }
 
+AABB* Spaceship::getAABB() {
+	float x = position.x, y = position.y, z = position.z;
+	return new AABB(x+4,y+4,z+3,x-4,y-4,z-4);
+}
+
 void Spaceship::animate() {
 
 }
