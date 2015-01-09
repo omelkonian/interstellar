@@ -127,12 +127,8 @@ void Idle()
 		paused = true;
 
 	// Update stars each second.
-	long curTime = glutGet(GLUT_ELAPSED_TIME);
-	if (curTime - oldTime > 1000) {
-		stars->update();
-		oldTime = curTime;
-	}
-
+	stars->update();
+	stars->generate(0);
 	// Sun animation.
 	sun->animate();
 
@@ -250,6 +246,8 @@ void Setup()
 	//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
 	glFrontFace(GL_CCW);
 
+	glutTimerFunc(50, timerStars, NULL);
+
 }
 
 void MenuSelect(int choice)
@@ -264,4 +262,8 @@ void MenuSelect(int choice)
 float randFloat(float a, float b)
 {
 	return ((b - a)*((float)rand() / RAND_MAX)) + a;
+}
+
+void timerStars(int value) {
+	stars->generate(value);
 }

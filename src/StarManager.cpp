@@ -1,11 +1,15 @@
 #include "StarManager.h"
 #include "visuals.h"
+#include <queue>
+#include <iostream>
+
+using namespace std;
 
 StarManager::StarManager() {
-	for (int i = 0; i < STAR_NUMBER; i++) {
-		this->stars[i] = new Star();
-		this->stars[i]->randomize();
-	}
+	//for (int i = 0; i < STAR_NUMBER; i++) {
+	//	this->stars[i] = new Star();
+	//	this->stars[i]->randomize();
+	//}
 }
 
 StarManager::~StarManager() {}
@@ -35,10 +39,17 @@ bool withinBounds(glm::vec3 position) {
 
 
 void StarManager::update() {
-	for (Star *star : this->stars) {
-		if (!(withinBounds(star->position))) {
-			star->randomize();
-		}
+	if (stars.empty()) {
+		return;
+	}
+	Star * star = stars.front();
+	if (!withinBounds(star->position)) {
+		stars.pop_front();
+		delete star;
 	}
 }
 
+void StarManager::generate(int value) {
+		Star * s = new Star();
+		stars.push_back(s);
+}

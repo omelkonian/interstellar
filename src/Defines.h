@@ -18,6 +18,3 @@
 #define Z_MAX 0
 #define Z_MIN -100
 
-// STARS
-#define STAR_INITIAL_Z -50
-#define STAR_NUMBER 30
