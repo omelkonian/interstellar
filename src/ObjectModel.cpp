@@ -1,9 +1,12 @@
 #include "ObjectModel.h"
+#include "Asteroid.h"
+#include "Defines.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
+
 
 using namespace std;
 
@@ -117,6 +120,40 @@ void ObjectModel::draw() {
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+}
+
+AABB* ObjectModel::getAABB() {
+	float x_max = X_MIN - 1000, y_max = Y_MIN - 1000, z_max = Z_MIN - 1000, x_min = X_MAX + 1000, y_min = Y_MAX + 1000, z_min = Z_MAX + 1000;
+
+	for (int i = 0; i < this->vertices * 3; i += 3) {
+		glm::vec3 vertex = { this->_vertices[i], this->_vertices[i + 1], this->_vertices[i + 2] };
+
+		float x = vertex.x + this->position.x;
+		float y = vertex.y + this->position.y;
+		float z = vertex.z + this->position.z;
+
+		if (x > x_max) x_max = x;
+		if (x < x_min) x_min = x;
+		if (y > y_max) y_max = y;
+		if (y < y_min) y_min = y;
+		if (z > z_max) z_max = z;
+		if (z < z_min) z_min = z;
+	}
+
+	if (dynamic_cast<Asteroid*>(this) != 0) {
+		float scaleFactor = ((Asteroid*)this)->scaleFactor;
+		float scaleFactorX = ((Asteroid*)this)->scaleFactorX;
+		float scaleFactorY = ((Asteroid*)this)->scaleFactorY;
+		float scaleFactorZ = ((Asteroid*)this)->scaleFactorZ;
+		x_max *= scaleFactor*scaleFactorX;
+		x_min *= scaleFactor*scaleFactorX;
+		y_max *= scaleFactor*scaleFactorY;
+		y_min *= scaleFactor*scaleFactorY;
+		z_max *= scaleFactor*scaleFactorZ;
+		z_min *= scaleFactor*scaleFactorZ;
+	}
+
+	return new AABB(x_max, y_max, z_max, x_min, y_min, z_min);
 }
 
 void ObjectModel::print() {

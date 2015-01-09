@@ -9,6 +9,8 @@
 #include "Asteroid.h"
 #include "Star.h"
 #include "StarManager.h"
+#include "Endgame.h"
+#include "Text.h"
 
 
 //-------- Functions --------------------------------

@@ -1,6 +1,8 @@
 #pragma once
 #include "Model.h"
+#include "AABB.h"
 #include "../gl/glm/glm.hpp"
+
 class ObjectModel :
 	public Model
 {
@@ -10,6 +12,8 @@ public:
 
 	void draw();
 	void print();
+
+	AABB* getAABB();
 
 protected:
 	GLfloat* _vertices;
@@ -21,7 +25,6 @@ protected:
 	int faces;
 	int normals;
 	int texels;
-
 	
 
 	//helping functions

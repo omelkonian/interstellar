@@ -5,12 +5,7 @@
 
 using namespace std;
 
-StarManager::StarManager() {
-	//for (int i = 0; i < STAR_NUMBER; i++) {
-	//	this->stars[i] = new Star();
-	//	this->stars[i]->randomize();
-	//}
-}
+StarManager::StarManager() {}
 
 StarManager::~StarManager() {}
 

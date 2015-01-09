@@ -17,6 +17,7 @@ public:
 
 	AABB* getAABB();
 
+	void printPosition();
 private:
 	ObjectModel *ship;
 	ObjectModel *torus;

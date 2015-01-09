@@ -4,6 +4,7 @@
 #include "AABB.h"
 
 class Asteroid : public ObjectModel {
+	/*AABB asteroidBox;*/
 public:
 	float scaleFactor;
 	float scaleFactorX;
@@ -12,9 +13,8 @@ public:
 
 	void randomize();
 	void draw();
+	void printPosition();
 
 	Asteroid(const char * file);
 	virtual ~Asteroid();
-
-	AABB* getAABB();
 };

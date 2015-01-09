@@ -26,8 +26,8 @@ void Asteroid::draw() {
 
 void Asteroid::randomize() 
 {
-	// Position in [(-100,-100), (100,100)]
-	this->position = { randFloat(-10.0, 10.0), randFloat(-10.0, 10.0), -50.0 };
+	// Position in [(-10,-10), (10,10)]
+	this->position = { randFloat(-1.0, 1.0), randFloat(-1.0, 1.0), -50.0 };
 	
 	// Size: Scale factor in [5,8]
 	this->scaleFactor += randFloat(0.4, 5.0);
@@ -36,34 +36,8 @@ void Asteroid::randomize()
 	this->scaleFactorX = randFloat(0.3, 3);
 	this->scaleFactorY = randFloat(0.3, 3);
 	this->scaleFactorZ = randFloat(0.3, 3);
-
-	// Surface(optional)
 }
 
-AABB* Asteroid::getAABB() {
-	float x_max = X_MIN, y_max = Y_MIN, z_max = Z_MIN, x_min = X_MAX, y_min = Y_MAX, z_min = Z_MAX;
-
-	for (int i = 0; i < this->vertices * 3; i += 3) {
-		glm::vec3 vertex = { this->_vertices[i], this->_vertices[i + 1], this->_vertices[i + 2] };
-		
-		float x = vertex.x + this->position.x;
-		float y = vertex.y + this->position.y;
-		float z = vertex.z + this->position.z;
-
-		if (x > x_max) x_max = x;
-		if (x < x_min) x_min = x;
-		if (y > y_max) y_max = y;
-		if (y < y_min) y_min = y;
-		if (z > z_max) z_max = z;
-		if (z < z_min) z_min = z;
-	}
-
-	x_max *= scaleFactor*scaleFactorX;
-	x_min *= scaleFactor*scaleFactorX;
-	y_max *= scaleFactor*scaleFactorY;
-	y_min *= scaleFactor*scaleFactorY;
-	z_max *= scaleFactor*scaleFactorZ;
-	z_min *= scaleFactor*scaleFactorZ;
-
-	return new AABB(x_max, y_max, z_max, x_min, y_min, z_min);
+void Asteroid::printPosition() {
+	printf("Asteroid Position: %f %f %f \n", position.x, position.y, position.z);
 }

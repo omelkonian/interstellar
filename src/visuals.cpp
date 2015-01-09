@@ -10,6 +10,7 @@
 #include "visuals.h"   // Header file for our OpenGL functions
 #include "Defines.h"
 
+// Bounding box.
 AABB *globalBox;
 
 // The models of the scene.
@@ -24,13 +25,17 @@ static float roty = 0.0;
 static float zoomIn = 0.0;
 static float zoomOut = 0.0;
 
-// Booleans for animating (rotating) and pausing.
+// Booleans for animating (rotating), pausing, game over.
 static bool animate = false;
 static bool paused = false;
+static bool ended = false;
 
-static long oldTime = glutGet(GLUT_ELAPSED_TIME);
+// Endgame
+Endgame *endGame;
 
 using namespace std;
+
+
 
 void DrawAxes()
 {
@@ -47,12 +52,16 @@ void DrawAxes()
 
 void Render()
 {
-	if (paused) 
+	if (paused)
 		return;
+
+	if (ended) {
+		endGame->renderEndgame(md, sun, stars, rotx, roty, zoomIn, zoomOut);
+		return;
+	}
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
 	glTranslatef(0, 0, -30); // Move camera a bit back.
@@ -63,7 +72,7 @@ void Render()
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
-	DrawAxes();
+	//DrawAxes();
 	//globalBox->draw();
 
 	// Asteroid && ship.
@@ -79,14 +88,7 @@ void Render()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
 	md->draw();
-	AABB *astBox = md->getAABB();
-	//astBox->draw();	
-	delete astBox;
-	
 	ship->draw();
-	AABB *shipBox = ship->getAABB();
-	//shipBox->draw();
-	delete shipBox;
 
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -108,10 +110,7 @@ void Resize(int w, int h)
 	if (h == 0) h = 1;
 	glViewport(0, 0, w, h);
 
-	// Setup viewing volume
-
 	glMatrixMode(GL_PROJECTION);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLoadIdentity();
 
 	gluPerspective(60.0, (float)w / (float)h, 1.0, 5000.0f);
@@ -122,13 +121,50 @@ void Idle()
 	if (paused)
 		return;
 
+	// Update psychedelic well.
+	if (ended) {
+		endGame->well->update();
+		
+		zoomOut += 2;
+
+		// Darken atmosphere (reset lighting).
+		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
+		GLfloat diffuseLight[] = { endGame->diffuse[0], endGame->diffuse[1], endGame->diffuse[2], 1.0 };
+		GLfloat specularLight[] = { endGame->specular[0], endGame->specular[1], endGame->specular[2], 1.0 };
+		GLfloat position[] = { endGame->lightPos[0], endGame->lightPos[1], endGame->lightPos[2], 1.0f };
+
+		glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight);
+		glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight);
+		glLightfv(GL_LIGHT1, GL_POSITION, position);
+
+		endGame->updateLighting();
+
+		glEnable(GL_LIGHT1);
+
+		if (endGame->getAge() > 20000)
+			paused = true;
+	}
+
 	// Collision detection.
-	if (ship->getAABB()->intersects(md->getAABB()))
-		paused = true;
+	if (!ended) {
+		AABB *shipBox = ship->getAABB();
+		AABB *asteroidBox = md->getAABB();
+		if (shipBox->intersects(asteroidBox)) {
+			ended = true;
+			glDisable(GL_LIGHT0);
+			endGame->timeCreated = glutGet(GLUT_ELAPSED_TIME);
+			endGame->well = new PsychedelicWell(ship->position);
+			endGame->text = new Text("GAME OVER", 1, ship->position);
+		}
+		delete shipBox;
+		delete asteroidBox;
+	}
 
 	// Update stars each second.
 	stars->update();
 	stars->generate(0);
+
 	// Sun animation.
 	sun->animate();
 
@@ -224,7 +260,7 @@ void Setup()
 	ship = new Spaceship();
 	md = new Asteroid("resources/asteroid_2.obj");
 	md->randomize();
-	md->speed = { 0.0f, -0.000f, 0.05f };
+	md->speed = { 0.0f, -0.000f, 0.01f };
 	md->rspeed = { 0.0f, -0.050f, 0.05f };
 
 	// Create light components
@@ -232,6 +268,8 @@ void Setup()
 	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
 	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
+
+	endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);

@@ -10,6 +10,7 @@
 #include "../gl/glm/glm.hpp"
 #include "../gl/glut.h"
 #include "../gl/SOIL.h"
+#include "AABB.h"
 
 class Model {
 private:
