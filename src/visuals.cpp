@@ -155,16 +155,16 @@ void Keyboard(unsigned char key, int x, int y)
 		zoomOut += 10;
 		break;
 	case 'w':
-		ship->position[1] += 1.5;
+		ship->speed[1] += 0.005;
 		break;
 	case 's':
-		ship->position[1] -= 1.5;
+		ship->speed[1] -= 0.005;
 		break;
 	case 'a':
-		ship->position[0] -= 1.5;
+		ship->speed[0] -= 0.005;
 		break;
 	case 'd':
-		ship->position[0] += 1.5;
+		ship->speed[0] += 0.005;
 		break;
 	case SPACEBAR:
 		paused = !paused;
@@ -245,9 +245,6 @@ void Setup()
 	glEnable(GL_CULL_FACE);
 	//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
 	glFrontFace(GL_CCW);
-
-	glutTimerFunc(50, timerStars, NULL);
-
 }
 
 void MenuSelect(int choice)
@@ -262,8 +259,4 @@ void MenuSelect(int choice)
 float randFloat(float a, float b)
 {
 	return ((b - a)*((float)rand() / RAND_MAX)) + a;
-}
-
-void timerStars(int value) {
-	stars->generate(value);
 }

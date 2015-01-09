@@ -44,5 +44,3 @@ void Mouse(int button,int state,int x,int y);
 void MenuSelect(int choice);
 
 float randFloat(float min, float max);
-
-void timerStars(int value);

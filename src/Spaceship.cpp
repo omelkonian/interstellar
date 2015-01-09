@@ -18,6 +18,7 @@ Spaceship::~Spaceship()
 void Spaceship::draw() 
 {	
 	//printf("Spaceship_pos = {%f,%f,%f}\n", this->position.x, this->position.y, this->position.z);
+	this->doPhysics();
 	glPushMatrix();
 		glTranslatef(this->position.x, this->position.y, this->position.z);
 		glRotatef(180, 0, 1, 0);
