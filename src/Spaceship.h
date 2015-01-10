@@ -25,5 +25,6 @@ private:
 	GLdouble look;
 	ObjectModel *ship;
 	ObjectModel *torus;
+	ObjectModel *torus2;
 };
 
