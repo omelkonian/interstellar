@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 	glutReshapeFunc(Resize);
 	glutIdleFunc(Idle);
 	glutKeyboardFunc(Keyboard); // For special input call glutSpecialFunc instead.
+	glutKeyboardUpFunc(KeyboardRelease);
 	glutSpecialFunc(SpecialKeyboard); // For special input call glutSpecialFunc instead.
 	glutMouseFunc(Mouse);
 

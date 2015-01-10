@@ -59,7 +59,7 @@ void Render()
 		endGame->renderEndgame(md, sun, stars, rotx, roty, zoomIn, zoomOut);
 		return;
 	}
-	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -94,9 +94,8 @@ void Render()
 
 	// Background.
 	sun->draw();
-	
-	stars->draw();
 
+	stars->draw();
 	glutSwapBuffers();             // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
 	// the hidden buffer and hide the visible one
@@ -124,7 +123,7 @@ void Idle()
 	// Update psychedelic well.
 	if (ended) {
 		endGame->well->update();
-		
+
 		zoomOut += 2;
 
 		// Darken atmosphere (reset lighting).
@@ -191,16 +190,16 @@ void Keyboard(unsigned char key, int x, int y)
 		zoomOut += 10;
 		break;
 	case 'w':
-		ship->speed[1] += 0.005;
+		ship->speed[1] = 0.055;
 		break;
 	case 's':
-		ship->speed[1] -= 0.005;
+		ship->speed[1] = -0.055;
 		break;
 	case 'a':
-		ship->speed[0] -= 0.005;
+		ship->speed[0] = -0.055;
 		break;
 	case 'd':
-		ship->speed[0] += 0.005;
+		ship->speed[0] = 0.055;
 		break;
 	case SPACEBAR:
 		paused = !paused;
@@ -213,6 +212,30 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 
 	glutPostRedisplay();
+}
+
+void KeyboardRelease(unsigned char key, int x, int y)
+{
+	if (key >= 65 && key <= 90) // accept CAPS also
+		key += 32;
+
+	switch (key)
+	{
+	case 'w':
+		ship->speed[1] = 0;
+		break;
+	case 's':
+		ship->speed[1] = 0;
+		break;
+	case 'a':
+		ship->speed[0] = 0;
+		break;
+	case 'd':
+		ship->speed[0] = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 void SpecialKeyboard(int key, int x, int y)
@@ -257,7 +280,7 @@ void Setup()
 	globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
 	stars = new StarManager();
 	sun = new Sun();
-	ship = new Spaceship();
+	ship = new Spaceship(1.0f);
 	md = new Asteroid("resources/asteroid_2.obj");
 	md->randomize();
 	md->speed = { 0.0f, -0.000f, 0.01f };

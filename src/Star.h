@@ -1,6 +1,6 @@
 #pragma once
 // STARS
-#define STAR_INITIAL_Z -50
+#define STAR_INITIAL_Z -100
 #define STAR_NUMBER 30
 #define STAR_SPEED 1.0f
 

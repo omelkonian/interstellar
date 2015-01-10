@@ -37,6 +37,9 @@ void DisplayModel(Model*);
 void Keyboard(unsigned char key,int x,int y);
 // Function for handling keyboard events.
 
+void KeyboardRelease(unsigned char key, int x, int y);
+// Function for releasing keys.
+
 void SpecialKeyboard(int key, int x, int y);
 // Function for handling special keyboard events.
 
