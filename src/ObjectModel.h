@@ -16,19 +16,21 @@ public:
 	AABB* getAABB();
 
 protected:
-	GLfloat* _vertices;
-	GLfloat* _normals;
-	GLuint* _faces;
-	GLfloat* _texels;
-	GLuint * _indices;
-	int vertices;
-	int faces;
-	int normals;
-	int texels;
+	glm::vec3* _vertices;
+	glm::vec3* _normals;
+	glm::vec2* _texels;
 	
+	int faces;
 
 	//helping functions
 	int preproccessFile(const char * filename);
 	int load_obj(const char * filename);
+private:
+	int vertices;
+	int normals;
+	int texels;
+	glm::vec3 *verticesFile;
+	glm::vec2 *texCoordsFile;
+	glm::vec3 *normalsFile;
 };
 

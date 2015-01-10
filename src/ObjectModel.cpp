@@ -9,23 +9,29 @@
 
 
 using namespace std;
+using namespace glm;
 
 ObjectModel::ObjectModel(const char * file) : Model()
 {
-		this->faces = this->normals = this->texels = this->vertices = 0;
-		this->preproccessFile(file);
-		this->_vertices = (GLfloat*)malloc(this->vertices * sizeof(GLfloat) * 3);
-		this->_texels = (GLfloat*)malloc(this->texels* sizeof(GLfloat) * 2);
-		this->_normals = (GLfloat*)malloc(this->normals * sizeof(GLfloat) * 3);
-		this->_faces = (GLuint*)malloc(this->faces * sizeof(GLuint) * 9);
-		this->_indices = (GLuint*)malloc(this->faces * sizeof(GLuint) * 3);
-		this->load_obj(file);
-		//this->print();
+	this->faces = this->normals = this->texels = this->vertices = 0;
+	this->preproccessFile(file);
+	this->faces *= 3;
+	this->verticesFile = (vec3 *)malloc(this->vertices * sizeof(vec3));
+	this->texCoordsFile = (vec2 *)malloc(this->texels * sizeof(vec2));
+	this->normalsFile = (vec3 *)malloc(this->normals * sizeof(vec3));
+	this->_vertices = (vec3*)malloc(this->faces * sizeof(vec3));
+	this->_texels = (vec2*)malloc(this->faces* sizeof(vec2));
+	this->_normals = (vec3*)malloc(this->faces * sizeof(vec3));
+	this->load_obj(file);
+	//this->print();
 }
 
 
 ObjectModel::~ObjectModel()
 {
+	free(this->_vertices);
+	free(this->_texels);
+	free(this->_normals);
 }
 
 int ObjectModel::preproccessFile(const char * filename) {
@@ -51,54 +57,51 @@ int ObjectModel::preproccessFile(const char * filename) {
 
 int ObjectModel::load_obj(const char * filename) {
 	string line;
-	GLfloat * $vertice = this->_vertices;
-	GLfloat * $normal = this->_normals;
-	GLfloat * $texel = this->_texels;
-	GLuint * $face = this->_faces;
-	GLuint * $index = this->_indices;
+	vec3 *$vertice = verticesFile;
+	vec3 *$normal = normalsFile;
+	vec2 *$texel = texCoordsFile;
+	int face = 0;
 
 	ifstream obj_file(filename, ifstream::in);
 	while (getline(obj_file, line)) {
 		if (line.substr(0, 2) == "v ") { //vertices
 			GLfloat x, y, z;
 			sscanf_s(line.substr(2).c_str(), "%f %f %f", &x, &y, &z);
-			$vertice[0] = x;
-			$vertice[1] = y;
-			$vertice[2] = z;
-			$vertice += 3;
+			$vertice->x = x;
+			$vertice->y = y;
+			$vertice->z = z;
+			$vertice++;
 		}
 		else if (line.substr(0, 2) == "vn") { //normals
 			GLfloat x, y, z;
 			sscanf_s(line.substr(2).c_str(), "%f %f %f", &x, &y, &z);
-			$normal[0] = x;
-			$normal[1] = y;
-			$normal[2] = z;
-			$normal += 3;
+			$normal->x = x;
+			$normal->y = y;
+			$normal->z = z;
+			$normal++;
 		}
 		else if (line.substr(0, 2) == "vt") { //texels
 			GLfloat u, v;
 			sscanf_s(line.substr(2).c_str(), "%f %f", &u, &v);
-			$texel[0] = u;
-			$texel[1] = v;
-			$texel += 2;
+			$texel->x = u;
+			$texel->y = v;
+			$texel++;
 		}
 		else if (line.substr(0, 2) == "f ") { //faces
 			GLint v[3], vt[3], vn[3];
 			sscanf_s(line.substr(2).c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d", &(v[0]), &vt[0], &vn[0], &v[1], &vt[1], &vn[1], &v[2], &vt[2], &vn[2]);
-			$face[0] = v[0] - 1;
-			$face[1] = vt[0];
-			$face[2] = vn[0];
-			$face[3] = v[1] - 1;
-			$face[4] = vt[1];
-			$face[5] = vn[1];
-			$face[6] = v[2] - 1;
-			$face[7] = vt[2];
-			$face[8] = vn[2];
-			$face += 9;
-			$index[0] = v[0] - 1;
-			$index[1] = v[1] - 1;
-			$index[2] = v[2] - 1;
-			$index += 3;
+			//faces are last, so the arrays are already populated
+			this->_vertices[face] = verticesFile[v[0] - 1];
+			this->_vertices[face + 1] = verticesFile[v[1] - 1];
+			this->_vertices[face + 2] = verticesFile[v[2] - 1];
+			this->_texels[face] = texCoordsFile[vt[0] - 1];
+			this->_texels[face + 1] = texCoordsFile[vt[1] - 1];
+			this->_texels[face + 2] = texCoordsFile[vt[2] - 1];
+			this->_normals[face] = normalsFile[vn[0] - 1];
+			this->_normals[face + 1] = normalsFile[vn[1] - 1];
+			this->_normals[face + 2] = normalsFile[vn[2] - 1];
+			face += 3;
+
 		}
 	}
 	obj_file.close();
@@ -107,26 +110,25 @@ int ObjectModel::load_obj(const char * filename) {
 
 void ObjectModel::draw() {
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_INDEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glNormalPointer(GL_FLOAT, 0, this->_normals);
-	//glIndexPointer(GL_INT, 3, this->_faces);
-	//glColorPointer(3, GL_FLOAT, 0, colors1);
 	glVertexPointer(3, GL_FLOAT, 0, this->_vertices);
+	glNormalPointer(GL_FLOAT, 0, this->_normals);
+	glTexCoordPointer(2, GL_FLOAT, 0, this->_texels);
 
 	Model::draw();
-	glDrawElements(GL_TRIANGLES, this->faces * 3, GL_UNSIGNED_INT, this->_indices);
+	glDrawArrays(GL_TRIANGLES, 0, this->faces);
 
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
-	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 AABB* ObjectModel::getAABB() {
 	float x_max = X_MIN - 1000, y_max = Y_MIN - 1000, z_max = Z_MIN - 1000, x_min = X_MAX + 1000, y_min = Y_MAX + 1000, z_min = Z_MAX + 1000;
 
-	for (int i = 0; i < this->vertices * 3; i += 3) {
-		glm::vec3 vertex = { this->_vertices[i], this->_vertices[i + 1], this->_vertices[i + 2] };
+	for (int i = 0; i < this->vertices; i++) {
+		glm::vec3 vertex = this->verticesFile[i];
 
 		float x = vertex.x + this->position.x;
 		float y = vertex.y + this->position.y;
@@ -168,9 +170,9 @@ void ObjectModel::print() {
 		printf("vt %f %f %f\n", this->_texels[2 * i], this->_texels[2 * i + 1]);
 	}
 	for (int i = 0; i < this->faces; i++) {
-		printf("f %d/%d/%d", this->_faces[9 * i], this->_faces[9 * i + 1], this->_faces[9 * i + 2]);
-		printf(" %d/%d/%d", this->_faces[9 * i + 3], this->_faces[9 * i + 4], this->_faces[9 * i + 5]);
-		printf(" %d/%d/%d\n", this->_faces[9 * i + 6], this->_faces[9 * i + 7], this->_faces[9 * i + 8]);
+		//printf("f %d/%d/%d", this->_faces[9 * i], this->_faces[9 * i + 1], this->_faces[9 * i + 2]);
+		//printf(" %d/%d/%d", this->_faces[9 * i + 3], this->_faces[9 * i + 4], this->_faces[9 * i + 5]);
+		//printf(" %d/%d/%d\n", this->_faces[9 * i + 6], this->_faces[9 * i + 7], this->_faces[9 * i + 8]);
 	}
 	for (int i = 0; i < this->faces; i++) {
 		//printf("i %d %d %d\n", this->_indices[3 * i], this->_indices[3 * i + 1], this->_indices[3 * i + 2]);

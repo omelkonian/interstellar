@@ -21,6 +21,7 @@ void Spaceship::draw()
 	Model::draw();
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
+	glScalef(0.7, 0.7, 0.7);
 	this->ship->draw();
 	glPopMatrix();
 
@@ -65,7 +66,7 @@ void Spaceship::doPhysics() {
 		this->speed.y = 0;
 	}
 	if (this->look != 0.0f) {
-		this->rposition.x = sin(this->position.x * 10 / this->look);
-		this->rposition.y = sin(this->position.y * 10 / this->look);
+		//this->rposition.y = sin(this->position.x / this->look * 1000) * 10;
+		//this->rposition.x = sin(this->position.y / this->look * 1000) * 10;
 	}
 }
