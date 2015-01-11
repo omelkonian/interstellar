@@ -5,6 +5,7 @@
 #include "visuals.h"
 #include "PsychedelicWell.h"
 #include "Text.h"
+#include "AsteroidManager.h"
 
 class Endgame {
 public:
@@ -26,5 +27,5 @@ public:
 
 	long getAge();
 
-	void renderEndgame(Asteroid *md, Sun *sun, StarManager *stars, float rotx, float roty, float zoomIn, float zoomOut);
+	void renderEndgame(AsteroidManager *md, Sun *sun, StarManager *stars, float rotx, float roty, float zoomIn, float zoomOut);
 };

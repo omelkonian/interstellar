@@ -11,6 +11,7 @@
 #include "StarManager.h"
 #include "Endgame.h"
 #include "Text.h"
+#include "AsteroidManager.h"
 
 
 //-------- Functions --------------------------------

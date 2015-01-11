@@ -11,6 +11,26 @@
 using namespace std;
 using namespace glm;
 
+ObjectModel::ObjectModel(ObjectModel *cpy) : Model()
+{
+	this->position = cpy->position;
+	this->speed = cpy->speed;
+	this->acceleration = cpy->acceleration;
+	this->rposition = cpy->rposition;
+	this->rspeed = cpy->rspeed;
+	this->racceleration = cpy->racceleration;
+	this->_vertices = cpy->_vertices;
+	this->_normals = cpy->_normals;
+	this->_texels = cpy->_texels;
+	this->faces = cpy->faces;
+	this->vertices = cpy->vertices;
+	this->normals = cpy->normals;
+	this->texels = cpy->texels;
+	this->verticesFile = cpy->verticesFile;
+	this->texCoordsFile = cpy->texCoordsFile;
+	this->normalsFile = cpy->normalsFile;
+}
+
 ObjectModel::ObjectModel(const char * file) : Model()
 {
 	this->faces = this->normals = this->texels = this->vertices = 0;
@@ -26,13 +46,13 @@ ObjectModel::ObjectModel(const char * file) : Model()
 	//this->print();
 }
 
-
-ObjectModel::~ObjectModel()
-{
+void ObjectModel::freeResources() {
 	free(this->_vertices);
 	free(this->_texels);
 	free(this->_normals);
 }
+
+ObjectModel::~ObjectModel() {}
 
 int ObjectModel::preproccessFile(const char * filename) {
 	string line;
@@ -127,8 +147,8 @@ void ObjectModel::draw() {
 AABB* ObjectModel::getAABB() {
 	float x_max = X_MIN - 1000, y_max = Y_MIN - 1000, z_max = Z_MIN - 1000, x_min = X_MAX + 1000, y_min = Y_MAX + 1000, z_min = Z_MAX + 1000;
 
-	for (int i = 0; i < this->vertices; i++) {
-		glm::vec3 vertex = this->verticesFile[i];
+	for (int i = 0; i < this->vertices*3; i++) {
+		glm::vec3 vertex = this->_vertices[i];
 
 		float x = vertex.x + this->position.x;
 		float y = vertex.y + this->position.y;
@@ -143,16 +163,12 @@ AABB* ObjectModel::getAABB() {
 	}
 
 	if (dynamic_cast<Asteroid*>(this) != 0) {
-		float scaleFactor = ((Asteroid*)this)->scaleFactor;
 		float scaleFactorX = ((Asteroid*)this)->scaleFactorX;
 		float scaleFactorY = ((Asteroid*)this)->scaleFactorY;
-		float scaleFactorZ = ((Asteroid*)this)->scaleFactorZ;
-		x_max *= scaleFactor*scaleFactorX;
-		x_min *= scaleFactor*scaleFactorX;
-		y_max *= scaleFactor*scaleFactorY;
-		y_min *= scaleFactor*scaleFactorY;
-		z_max *= scaleFactor*scaleFactorZ;
-		z_min *= scaleFactor*scaleFactorZ;
+		x_max *= scaleFactorX;
+		x_min *= scaleFactorX;
+		y_max *= scaleFactorY;
+		y_min *= scaleFactorY;
 	}
 
 	return new AABB(x_max, y_max, z_max, x_min, y_min, z_min);

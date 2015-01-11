@@ -40,9 +40,6 @@ void Spaceship::draw()
 	glPopMatrix();
 
 	glPopMatrix();
-
-
-	this->printPosition();
 }
 
 AABB* Spaceship::getAABB() {

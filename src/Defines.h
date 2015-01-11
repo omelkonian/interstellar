@@ -18,3 +18,11 @@
 #define Z_MAX 0
 #define Z_MIN -100
 
+// SPACESHIP
+#define SPACESHIP_Y 15
+#define SPACESHIP_X 30
+
+// STARS
+#define STAR_INITIAL_Z -100
+#define STAR_NUMBER 30
+#define STAR_SPEED 1.0f

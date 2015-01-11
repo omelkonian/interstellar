@@ -14,7 +14,7 @@
 AABB *globalBox;
 
 // The models of the scene.
-Asteroid *md;
+AsteroidManager *asteroidManager;
 Sun *sun;
 Spaceship *ship;
 StarManager *stars;
@@ -56,7 +56,7 @@ void Render()
 		return;
 
 	if (ended) {
-		endGame->renderEndgame(md, sun, stars, rotx, roty, zoomIn, zoomOut);
+		endGame->renderEndgame(asteroidManager, sun, stars, rotx, roty, zoomIn, zoomOut);
 		return;
 	}
 
@@ -76,6 +76,8 @@ void Render()
 	//globalBox->draw();
 
 	// Asteroid && ship.
+	
+	
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glColor4f(0.1, 0.1, 0.1, 1);
@@ -87,8 +89,10 @@ void Render()
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
-	md->draw();
+	asteroidManager->draw();
+
 	ship->draw();
+	ship->getAABB()->draw();
 
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -96,6 +100,7 @@ void Render()
 	sun->draw();
 
 	stars->draw();
+
 	glutSwapBuffers();             // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
 	// the hidden buffer and hide the visible one
@@ -124,7 +129,8 @@ void Idle()
 	if (ended) {
 		endGame->well->update();
 
-		zoomOut += 2;
+		if (endGame->getAge() > 1500 && endGame->getAge() < 7000)
+			zoomOut += 0.5;
 
 		// Darken atmosphere (reset lighting).
 		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
@@ -141,36 +147,42 @@ void Idle()
 
 		glEnable(GL_LIGHT1);
 
-		if (endGame->getAge() > 20000)
-			paused = true;
+		if (endGame->getAge() > 25000)
+			exit(1);
 	}
 
 	// Collision detection.
 	if (!ended) {
 		AABB *shipBox = ship->getAABB();
-		AABB *asteroidBox = md->getAABB();
-		if (shipBox->intersects(asteroidBox)) {
-			ended = true;
-			glDisable(GL_LIGHT0);
-			endGame->timeCreated = glutGet(GLUT_ELAPSED_TIME);
-			endGame->well = new PsychedelicWell(ship->position);
-			endGame->text = new Text("GAME OVER", 1, ship->position);
+		for (Asteroid *a : asteroidManager->asteroids) {
+			AABB *asteroidBox = a->getAABB();
+			if (shipBox->intersects(asteroidBox)) {
+				ended = true;
+				animate = true;
+
+				endGame->timeCreated = glutGet(GLUT_ELAPSED_TIME);
+				endGame->well = new PsychedelicWell(ship->position);
+				endGame->text = new Text("GAME OVER", 0.05, ship->position);
+			}
+			delete asteroidBox;
 		}
+
 		delete shipBox;
-		delete asteroidBox;
 	}
 
-	// Update stars each second.
+	// Update stars and asteroids each frame.
 	stars->update();
 	stars->generate(0);
+
+	asteroidManager->update();
 
 	// Sun animation.
 	sun->animate();
 
 	// Left-click animation.
 	if (animate) {
-		rotx += 0.04;
-		roty += 0.04;
+		rotx += 0.05;
+		roty += 0.05;
 	}
 
 	glutPostRedisplay();
@@ -281,10 +293,8 @@ void Setup()
 	stars = new StarManager();
 	sun = new Sun();
 	ship = new Spaceship(1.0f);
-	md = new Asteroid("resources/asteroid_2.obj");
-	md->randomize();
-	md->speed = { 0.0f, -0.000f, 0.01f };
-	md->rspeed = { 0.0f, -0.050f, 0.05f };
+	asteroidManager = new AsteroidManager("resources/asteroid_2.obj");
+	
 
 	// Create light components
 	GLfloat ambientLight[] = { 0.3, 0.3, 0.3, 1.0 };

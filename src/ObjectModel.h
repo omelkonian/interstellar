@@ -8,12 +8,15 @@ class ObjectModel :
 {
 public:
 	ObjectModel(const char * file);
+	ObjectModel(ObjectModel *cpy); // copy constructor
 	~ObjectModel();
 
 	void draw();
 	void print();
 
 	AABB* getAABB();
+
+	void freeResources();
 
 protected:
 	glm::vec3* _vertices;

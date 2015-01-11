@@ -4,17 +4,15 @@
 #include "AABB.h"
 
 class Asteroid : public ObjectModel {
-	/*AABB asteroidBox;*/
 public:
-	float scaleFactor;
 	float scaleFactorX;
 	float scaleFactorY;
-	float scaleFactorZ;
 
 	void randomize();
 	void draw();
 	void printPosition();
 
 	Asteroid(const char * file);
+	Asteroid(Asteroid *cpy); // copy constructor
 	virtual ~Asteroid();
 };

@@ -1,10 +1,9 @@
 #pragma once
-#define SPACESHIP_Y 15.0f
-#define SPACESHIP_X 30.0f
 
 #include "Model.h"
 #include "ObjectModel.h"
 #include "AABB.h"
+#include "Defines.h"
 
 class Spaceship :
 	public Model
