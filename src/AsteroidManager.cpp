@@ -20,10 +20,8 @@ void AsteroidManager::draw() {
 	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > 1000)
 		this->generate();
 
-	for (Asteroid *asteroid : this->asteroids) {
+	for (Asteroid *asteroid : this->asteroids) 
 		asteroid->draw();
-		asteroid->getAABB()->draw();
-	}
 }
 
 bool AsteroidManager::withinBounds(glm::vec3 position) {

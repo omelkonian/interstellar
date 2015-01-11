@@ -77,7 +77,6 @@ void Render()
 
 	// Asteroid && ship.
 	
-	
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glColor4f(0.1, 0.1, 0.1, 1);
@@ -92,7 +91,6 @@ void Render()
 	asteroidManager->draw();
 
 	ship->draw();
-	ship->getAABB()->draw();
 
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -129,7 +127,7 @@ void Idle()
 	if (ended) {
 		endGame->well->update();
 
-		if (endGame->getAge() > 1500 && endGame->getAge() < 7000)
+		if (endGame->getAge() > 1500 && endGame->getAge() < 10000)
 			zoomOut += 0.5;
 
 		// Darken atmosphere (reset lighting).
