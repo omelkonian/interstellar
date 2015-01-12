@@ -34,7 +34,8 @@ Model::~Model() {
 
 void Model::doPhysics() {
 	long timeNew = glutGet(GLUT_ELAPSED_TIME);
-	float deltaTime = (timeNew - timeOld) / 1000.0f;
+	float deltaTime = (timeNew - timeOld) / 1.0f;
+	timeOld = timeNew;
 	//linear
 	this->speed = this->speed + this->acceleration*deltaTime;
 	this->position = this->position + this->speed*deltaTime;

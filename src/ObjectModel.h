@@ -14,8 +14,6 @@ public:
 	void draw();
 	void print();
 
-	AABB* getAABB();
-
 	void freeResources();
 
 protected:

@@ -13,9 +13,6 @@
 #include "AABB.h"
 
 class Model : public AABB{
-private:
-	long timeOld;
-
 public:
 	//linear variables
 	glm::vec3 position;
@@ -27,7 +24,8 @@ public:
 	glm::vec3 racceleration;
 	//scale
 	glm::vec3 scale;
-
+	//time
+	long timeOld;
 	//############## methods #####################
 	//default constructor
 	Model();

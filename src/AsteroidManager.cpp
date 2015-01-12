@@ -30,13 +30,10 @@ void AsteroidManager::draw() {
 
 	glColor4f(0.1, 0.1, 0.1, 1);
 
-	// Generate an asteroid each 2 seconds.
-	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > 2000)
-		this->generate();
-
 	for (Asteroid *asteroid : this->asteroids) {
 		asteroid->draw();
-		asteroid->printBounds();
+		//asteroid->drawBounds();
+		//asteroid->printBounds();
 	}
 
 	glDisable(GL_COLOR_MATERIAL);
@@ -44,21 +41,24 @@ void AsteroidManager::draw() {
 }
 
 bool AsteroidManager::withinBounds(glm::vec3 position) {
-	if (position.z > Z_MAX) 
+	if (position.z > Z_MAX)
 		return false;
 	return true;
 }
 
 
 void AsteroidManager::update() {
-	if (asteroids.empty()) {
-		return;
-	}
-	Asteroid * asteroid = asteroids.front();
-	if (!withinBounds(asteroid->position)) {
-		this->currentScore->score += asteroid->getScore();
-		asteroids.pop_front();
-		delete asteroid; 
+	// Generate an asteroid each 2 seconds.
+	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > 2000)
+		this->generate();
+
+	if (!asteroids.empty()) {
+		Asteroid * asteroid = asteroids.front();
+		if (!withinBounds(asteroid->position)) {
+			this->currentScore->score += asteroid->getScore();
+			asteroids.pop_front();
+			delete asteroid;
+		}
 	}
 }
 
@@ -68,5 +68,6 @@ void AsteroidManager::generate() {
 	a->updateBounds();
 	a->speed = { 0, 0, this->asteroidSpeed };
 	asteroids.push_back(a);
+	a->printPosition();
 	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME);
 }

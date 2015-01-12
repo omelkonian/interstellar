@@ -123,10 +123,11 @@ void Idle()
 
 	// Update psychedelic well.
 	if (ended) {
+		if (endGame->getAge() > 0 && endGame->getAge() < 500)
 		endGame->well->update();
 
-		if (endGame->getAge() > 1500 && endGame->getAge() < 10000)
-			zoomOut += 0.5;
+		if (endGame->getAge() > 1500 && endGame->getAge() < 5000)
+			zoomOut += 0.1;
 
 		// Darken atmosphere (reset lighting).
 		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
@@ -162,7 +163,9 @@ void Idle()
 			}
 			//delete asteroidBox;
 		}
-		//delete shipBox;
+		
+		stars->generate(0);
+		asteroidManager->update();
 	}
 
 	// Update stars,asteroids and levelManager each frame.
@@ -172,18 +175,15 @@ void Idle()
 		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
 	}
 
+	
 	stars->update();
-	stars->generate(0);
-
-	asteroidManager->update();
-
 	// Sun animation.
 	sun->animate();
 
 	// Left-click animation.
 	if (animate) {
-		rotx += 0.05;
-		roty += 0.05;
+		rotx += 0.02;
+		roty += 0.02;
 	}
 
 	glutPostRedisplay();

@@ -5,8 +5,8 @@ RandomItem::RandomItem() : Model() {}
 
 void RandomItem::randomize() {
 	this->position = { this->position.x + randFloat(-4, 4), this->position.y + randFloat(-4, 4), this->position.z + randFloat(-4, 4) };
-	this->speed = { randFloat(-1, 1), randFloat(-1, 1), randFloat(-1, 1) };
-	this->rspeed = { randFloat(-1, 1), randFloat(-1, 1), randFloat(-1, 1) };
+	this->speed = { randFloat(-0.1,0.1), randFloat(-0.1,0.1), randFloat(-0.1,0.1) };
+	this->rspeed = { randFloat(-0.1,0.1), randFloat(-0.1,0.1), randFloat(-0.1,0.1) };
 	this->color = { randFloat(0, 1), randFloat(0, 1), randFloat(0, 1) };
 	this->shape = rand() % 7;
 }
