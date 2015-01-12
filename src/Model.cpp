@@ -16,7 +16,7 @@
 
 using namespace std;
 
-Model::Model() {
+Model::Model() : AABB({ 0, 0, 0 }, { 0, 0, 0 },&position){
 	timeOld = glutGet(GLUT_ELAPSED_TIME);
 	speed = { 0, 0, 0 };
 	acceleration = { 0, 0, 0 };
@@ -24,6 +24,7 @@ Model::Model() {
 	rspeed = { 0, 0, 0 };
 	racceleration = { 0, 0, 0 };
 	rposition = { 0, 0, 0 };
+	scale = { 1.0, 1.0, 1.0 };
 }
 
 
@@ -33,7 +34,7 @@ Model::~Model() {
 
 void Model::doPhysics() {
 	long timeNew = glutGet(GLUT_ELAPSED_TIME);
-	float deltaTime = (timeNew - timeOld)/1000.0f;
+	float deltaTime = (timeNew - timeOld) / 1000.0f;
 	//linear
 	this->speed = this->speed + this->acceleration*deltaTime;
 	this->position = this->position + this->speed*deltaTime;
@@ -44,11 +45,12 @@ void Model::doPhysics() {
 
 void Model::draw() {
 	this->doPhysics();
-	
 	glTranslatef(this->position.x, this->position.y, this->position.z);
 	glRotatef(this->rposition.x, 1, 0, 0);
 	glRotatef(this->rposition.y, 0, 1, 0);
 	glRotatef(this->rposition.z, 0, 0, 1);
+	glScalef(this->scale.x, this->scale.y, this->scale.z);
+
 }
 
 void Model::print() {

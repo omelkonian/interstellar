@@ -2,8 +2,9 @@
 
 #include <deque>
 #include "RandomItem.h"
+#include "AABB.h"
 
-class PsychedelicWell {
+class PsychedelicWell : AABB {
 	std::deque<RandomItem*> randoms;
 	AABB *boundingBox;
 	glm::vec3 position;

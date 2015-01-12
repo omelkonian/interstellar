@@ -5,9 +5,6 @@
 
 class Asteroid : public ObjectModel {
 public:
-	float scaleFactorX;
-	float scaleFactorY;
-
 	void randomize();
 	void draw();
 	void printPosition();
@@ -16,5 +13,6 @@ public:
 
 	Asteroid(const char * file);
 	Asteroid(Asteroid *cpy); // copy constructor
+	Asteroid(const Asteroid &cpy); //correct copy constructor
 	virtual ~Asteroid();
 };

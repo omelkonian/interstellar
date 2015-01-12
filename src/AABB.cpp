@@ -4,65 +4,93 @@
 #include <iostream>
 
 using namespace std;
+using namespace glm;
 
-AABB::AABB(float x_max, float y_max, float z_max, float x_min, float y_min, float z_min) {
-	this->x_max = x_max;
-	this->y_max = y_max;
-	this->z_max = z_max;
-	this->x_min = x_min;
-	this->y_min = y_min;
-	this->z_min = z_min;
+AABB::AABB(float max_x, float max_y, float max_z, float min_x, float min_y, float min_z) {
+	this->max.x = max_x;
+	this->max.y = max_y;
+	this->max.z = max_z;
+	this->min.x = min_x;
+	this->min.y = min_y;
+	this->min.z = min_z;
+	this->positionBound = NULL;
 }
+
+AABB::AABB(vec3 min, vec3 max, vec3 *position) : minInit(min), maxInit(max), positionBound(position){
+	min = minInit + *position;
+	max = maxInit + *position;
+}
+
+//AABB::AABB(ObjectModel const &model) {
+//	this->model = &model;
+//}
 
 AABB::~AABB() {}
 
-void AABB::draw() {
+void AABB::drawBounds() {
+	this->updateBounds();
 	glPushMatrix();
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_LINES);
-	glVertex3f(x_max, y_max, z_max);
-	glVertex3f(x_max, y_min, z_max);
-	glVertex3f(x_max, y_max, z_max);
-	glVertex3f(x_max, y_max, z_min);
-	glVertex3f(x_max, y_max, z_max);
-	glVertex3f(x_min, y_max, z_max);
+	glVertex3f(max.x, max.y, max.z);
+	glVertex3f(max.x, min.y, max.z);
+	glVertex3f(max.x, max.y, max.z);
+	glVertex3f(max.x, max.y, min.z);
+	glVertex3f(max.x, max.y, max.z);
+	glVertex3f(min.x, max.y, max.z);
 
-	glVertex3f(x_max, y_min, z_min);
-	glVertex3f(x_max, y_min, z_max);
-	glVertex3f(x_max, y_min, z_min);
-	glVertex3f(x_max, y_max, z_min);
-	glVertex3f(x_max, y_min, z_min);
-	glVertex3f(x_min, y_min, z_min);
+	glVertex3f(max.x, min.y, min.z);
+	glVertex3f(max.x, min.y, max.z);
+	glVertex3f(max.x, min.y, min.z);
+	glVertex3f(max.x, max.y, min.z);
+	glVertex3f(max.x, min.y, min.z);
+	glVertex3f(min.x, min.y, min.z);
 
-	glVertex3f(x_min, y_max, z_min);
-	glVertex3f(x_min, y_min, z_min);
-	glVertex3f(x_min, y_max, z_min);
-	glVertex3f(x_min, y_max, z_max);
-	glVertex3f(x_min, y_max, z_min);
-	glVertex3f(x_max, y_max, z_min);
+	glVertex3f(min.x, max.y, min.z);
+	glVertex3f(min.x, min.y, min.z);
+	glVertex3f(min.x, max.y, min.z);
+	glVertex3f(min.x, max.y, max.z);
+	glVertex3f(min.x, max.y, min.z);
+	glVertex3f(max.x, max.y, min.z);
 
-	glVertex3f(x_min, y_min, z_max);
-	glVertex3f(x_min, y_max, z_max);
-	glVertex3f(x_min, y_min, z_max);
-	glVertex3f(x_min, y_min, z_min);
-	glVertex3f(x_min, y_min, z_max);
-	glVertex3f(x_max, y_min, z_max);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(min.x, max.y, max.z);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(min.x, min.y, min.z);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(max.x, min.y, max.z);
 
 	glEnd();
 	glPopMatrix();
 }
 
 bool AABB::intersects(AABB *box) {
-	if ((box->z_max > this->z_min && box->z_min < this->z_max)
-		&& (box->y_max > this->y_min && box->y_min < this->y_max)
-		&& (box->x_max > this->x_min && box->x_min < this->x_max))
+	this->updateBounds();
+	box->updateBounds();
+	if ((box->max.z > this->min.z && box->min.z < this->max.z)
+		&& (box->max.y > this->min.y && box->min.y < this->max.y)
+		&& (box->max.x > this->min.x && box->min.x < this->max.x))
 		return true;
 	return false;
 }
 
-void AABB::print() {
+bool AABB::withinBounds(glm::vec3 pos) {
+	if ((pos.x > max.x) || (pos.x < min.x))
+		return false;
+	if ((pos.y > max.y) || (pos.y < min.y))
+		return false;
+	if ((pos.z > max.z) || (pos.z < min.z))
+		return false;
+	return true;
+}
+
+void AABB::updateBounds() {
+	max = maxInit + *positionBound;
+	min = minInit + *positionBound;
+}
+void AABB::printBounds() {
 	cout << "Printing Bounding Box" << endl;
-	cout << " X: (" << x_min << ", " << x_max << ")" << endl;
-	cout << " Y: (" << y_min << ", " << y_max << ")" << endl;
-	cout << " Z: (" << z_min << ", " << z_max << ")" << endl;
+	cout << " X: (" << min.x << ", " << max.x << ")" << endl;
+	cout << " Y: (" << min.y << ", " << max.y << ")" << endl;
+	cout << " Z: (" << min.z << ", " << max.z << ")" << endl;
 }

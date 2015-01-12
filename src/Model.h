@@ -12,7 +12,7 @@
 #include "../gl/SOIL.h"
 #include "AABB.h"
 
-class Model {
+class Model : public AABB{
 private:
 	long timeOld;
 
@@ -25,6 +25,8 @@ public:
 	glm::vec3 rposition;
 	glm::vec3 rspeed;
 	glm::vec3 racceleration;
+	//scale
+	glm::vec3 scale;
 
 	//############## methods #####################
 	//default constructor

@@ -43,6 +43,7 @@ ObjectModel::ObjectModel(const char * file) : Model()
 	this->_texels = (vec2*)malloc(this->faces* sizeof(vec2));
 	this->_normals = (vec3*)malloc(this->faces * sizeof(vec3));
 	this->load_obj(file);
+	constructBounds();
 	//this->print();
 }
 
@@ -133,6 +134,7 @@ int ObjectModel::load_obj(const char * filename) {
 }
 
 void ObjectModel::draw() {
+	glPushMatrix();
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -146,13 +148,14 @@ void ObjectModel::draw() {
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+	glPopMatrix();
 }
 
 AABB* ObjectModel::getAABB() {
 	float x_max = X_MIN - 1000, y_max = Y_MIN - 1000, z_max = Z_MIN - 1000, x_min = X_MAX + 1000, y_min = Y_MAX + 1000, z_min = Z_MAX + 1000;
 
 	for (int i = 0; i < this->vertices*3; i++) {
-		glm::vec3 vertex = this->_vertices[i];
+		glm::vec3 &vertex = this->_vertices[i];
 
 		float x = vertex.x + this->position.x;
 		float y = vertex.y + this->position.y;
@@ -167,8 +170,8 @@ AABB* ObjectModel::getAABB() {
 	}
 
 	if (dynamic_cast<Asteroid*>(this) != 0) {
-		float scaleFactorX = ((Asteroid*)this)->scaleFactorX;
-		float scaleFactorY = ((Asteroid*)this)->scaleFactorY;
+		float scaleFactorX = ((Asteroid*)this)->scale.x;
+		float scaleFactorY = ((Asteroid*)this)->scale.y;
 		x_max *= scaleFactorX;
 		x_min *= scaleFactorX;
 		y_max *= scaleFactorY;
@@ -176,6 +179,27 @@ AABB* ObjectModel::getAABB() {
 	}
 
 	return new AABB(x_max, y_max, z_max, x_min, y_min, z_min);
+}
+
+void ObjectModel::constructBounds() {
+	this->minInit = { +FLT_MAX, +FLT_MAX, +FLT_MAX };
+	this->maxInit = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+	for (int i = 0; i < this->vertices * 3; i++) {
+		glm::vec3 vertex = this->_vertices[i];
+
+		float x = vertex.x + this->position.x;
+		float y = vertex.y + this->position.y;
+		float z = vertex.z + this->position.z;
+
+		if (x > max.x) maxInit.x = x;
+		if (x < min.x) minInit.x = x;
+		if (y > max.y) maxInit.y = y;
+		if (y < min.y) minInit.y = y;
+		if (z > max.z) maxInit.z = z;
+		if (z < min.z) minInit.z = z;
+	}
+	maxInit *= this->scale;
+	minInit *= this->scale;
 }
 
 void ObjectModel::print() {

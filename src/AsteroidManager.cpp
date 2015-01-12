@@ -34,8 +34,10 @@ void AsteroidManager::draw() {
 	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > 2000)
 		this->generate();
 
-	for (Asteroid *asteroid : this->asteroids) 
+	for (Asteroid *asteroid : this->asteroids) {
 		asteroid->draw();
+		asteroid->printBounds();
+	}
 
 	glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
@@ -61,8 +63,9 @@ void AsteroidManager::update() {
 }
 
 void AsteroidManager::generate() {
-	Asteroid * a = new Asteroid(this->mainModel);
+	Asteroid * a = new Asteroid(*this->mainModel);
 	a->randomize();
+	a->updateBounds();
 	a->speed = { 0, 0, this->asteroidSpeed };
 	asteroids.push_back(a);
 	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME);

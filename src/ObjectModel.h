@@ -29,6 +29,7 @@ protected:
 	int preproccessFile(const char * filename);
 	int load_obj(const char * filename);
 private:
+	void constructBounds();
 	int vertices;
 	int normals;
 	int texels;

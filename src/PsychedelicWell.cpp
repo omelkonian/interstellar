@@ -9,10 +9,7 @@
 
 using namespace std;
 
-PsychedelicWell::PsychedelicWell(glm::vec3 pos) {
-	this->position = pos;
-	this->boundingBox = new AABB(pos.x + 10, pos.y + 10, pos.z + 20, pos.x - 20, pos.y - 10, pos.z - 10);
-
+PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ 10, 10, 20 }, {-20,-10,-10}, &position) {
 	for (int i = 0; i < ITEM_NO; i++) {
 		RandomItem *s = new RandomItem();
 		s->randomize();
@@ -37,11 +34,11 @@ void PsychedelicWell::draw() {
 }
 
 bool PsychedelicWell::withinBounds(glm::vec3 pos) {
-	if ((pos.x > this->boundingBox->x_max) || (pos.x < this->boundingBox->x_min))
+	if ((pos.x > this->max.x) || (pos.x < this->min.x))
 		return false;
-	if ((pos.y > this->boundingBox->y_max) || (pos.y < this->boundingBox->y_min))
+	if ((pos.y > this->max.y) || (pos.y < this->min.y))
 		return false;
-	if ((pos.z > this->boundingBox->z_max) || (pos.z < this->boundingBox->z_min))
+	if ((pos.z > this->max.z) || (pos.z < this->min.z))
 		return false;
 	return true;
 }

@@ -7,8 +7,14 @@ Spaceship::Spaceship(GLdouble look) : Model(), look(look)
 	this->ship = new ObjectModel("resources/spaceship.obj");
 	this->torus = new ObjectModel("resources/torus.obj");
 	this->torus2 = new ObjectModel("resources/torus.obj");
+	this->minInit = { -4, -4, -4 };
+	this->maxInit = { 4, 4, 4 };
+	this->positionBound = &this->position;
+	this->ship->scale = { 0.7, 0.7, 0.7 };
+	this->torus->scale = this->torus2->scale = { 5, 5, 5 };
 	this->torus->rspeed = { 0, 0, 0.05f };
 	this->torus2->rspeed = { 0, 0, -0.05f };
+	this->torus2->position = { 0.0, 0.0, -3.0 };
 }
 
 
@@ -37,18 +43,14 @@ void Spaceship::draw()
 
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
-	glScalef(0.7,0.7,0.7);
 	this->ship->draw();
 	glPopMatrix();
 
 	glPushMatrix();
-	glScalef(5, 5, 5); // make torus big enough to surround ship
 	this->torus->draw();
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.0, 0.0, -3);
-	glScalef(5, 5, 5); // make torus big enough to surround ship
 	this->torus2->draw();
 	glPopMatrix();
 

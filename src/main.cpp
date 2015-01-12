@@ -33,13 +33,12 @@ int main(int argc, char* argv[])
 
 	// Define the main window size and initial position 
 	// ( upper left corner, boundaries included )
-	glutInitWindowSize(1200, 600);
+	glutInitWindowSize(1280, 720);
 	glutInitWindowPosition(0, 0);
 
 	// Create and label the main window
 	glutCreateWindow("Interstellar");
-	glutFullScreen();           // making the window full screen
-
+	//glutFullScreen();
 	// Configure various properties of the OpenGL rendering context
 	Setup();
 
@@ -55,13 +54,14 @@ int main(int argc, char* argv[])
 	glutMouseFunc(Mouse);
 
 	glutCreateMenu(MenuSelect);
-	//glutAddMenuEntry("Tag",CONSTANT);
+	glutAddMenuEntry("Full Screen",0);
+	glutAddMenuEntry("Restart", 1);
 
 	// attach the menu to the right button
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	// Start song loop.
-	PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+	//PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 
 	//Enter main event handling loop
 	glutMainLoop();

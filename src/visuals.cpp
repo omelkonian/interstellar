@@ -90,6 +90,7 @@ void Render()
 	asteroidManager->draw();
 
 	ship->draw();
+	ship->drawBounds();
 
 	// Background.
 	sun->draw();
@@ -148,10 +149,10 @@ void Idle()
 
 	// Collision detection.
 	if (!ended) {
-		AABB *shipBox = ship->getAABB();
+		//AABB *shipBox = ship->getAABB();
 		for (Asteroid *a : asteroidManager->asteroids) {
-			AABB *asteroidBox = a->getAABB();
-			if (shipBox->intersects(asteroidBox)) {
+			//AABB *asteroidBox = a->getAABB();
+			if (ship->intersects(a)) {
 				ended = true;
 				animate = true;
 
@@ -159,9 +160,9 @@ void Idle()
 				endGame->well = new PsychedelicWell(ship->position);
 				endGame->text = new Text("GAME OVER", 0.05, { ship->position[0] - 5, ship->position[1], ship->position[2] + 25});
 			}
-			delete asteroidBox;
+			//delete asteroidBox;
 		}
-		delete shipBox;
+		//delete shipBox;
 	}
 
 	// Update stars,asteroids and levelManager each frame.
@@ -324,6 +325,13 @@ void Setup()
 void MenuSelect(int choice)
 {
 	switch (choice) {
+	case 0:
+		glutFullScreen();
+		break;
+	case 1:
+		ended = false;
+		rotx = roty = zoomIn = zoomIn = 0.0f;
+		break;
 	default:
 		break;
 	}

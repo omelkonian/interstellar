@@ -6,35 +6,32 @@
 
 using namespace std;
 
-Asteroid::Asteroid(Asteroid *cpy) : ObjectModel(cpy)
+Asteroid::Asteroid(Asteroid const &cpy) : ObjectModel(cpy)
 {
-	this->scaleFactorX = 1;
-	this->scaleFactorY = 1;
+	this->positionBound = &this->position;
 }
 
 Asteroid::Asteroid(const char * file) : ObjectModel(file) 
 {
-	this->scaleFactorX = 1;
-	this->scaleFactorY = 1;
+
 }
 
 Asteroid::~Asteroid() {}
 
 void Asteroid::draw() {
 	glPushMatrix();
-	glScalef(this->scaleFactorX, this->scaleFactorY, 1);
 	ObjectModel::draw();
 	glPopMatrix();
+	this->drawBounds();
 }
 
 void Asteroid::randomize() {
 	// Shape
-	this->scaleFactorX = randFloat(1, 10);
-	this->scaleFactorY = randFloat(1, 10);
-
+	this->scale.x = randFloat(1, 10);
+	this->scale.y = randFloat(1, 10);
 	// Position in spaceship's movement boundaries.
-	float boundX = SPACESHIP_X * (1.0 / (this->scaleFactorX));
-	float boundY = SPACESHIP_Y * (1.0 / (this->scaleFactorY));
+	float boundX = SPACESHIP_X * (1.0 / (this->scale.x));
+	float boundY = SPACESHIP_Y * (1.0 / (this->scale.y));
 	this->position = { randFloat(-boundX, boundX), randFloat(-boundY, boundY), -100.0 };
 
 	// Rotation Speed
@@ -42,7 +39,7 @@ void Asteroid::randomize() {
 }
 
 int Asteroid::getScore() {
-	return 10 * this->scaleFactorX + 10 * this->scaleFactorY;
+	return 10 * this->scale.x + 10 * this->scale.y;
 }
 
 void Asteroid::printPosition() {
