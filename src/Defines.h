@@ -15,7 +15,7 @@
 #define X_MIN -50
 #define Y_MAX 50
 #define Y_MIN -50
-#define Z_MAX 0
+#define Z_MAX 20
 #define Z_MIN -100
 
 // SPACESHIP
@@ -24,5 +24,12 @@
 
 // STARS
 #define STAR_INITIAL_Z -100
-#define STAR_NUMBER 30
+#define STAR_NUMBER 50
 #define STAR_SPEED 1.0f
+
+// ASTEROIDS
+#define ASTEROID_INITIAL_SPEED 1
+#define ASTEROID_SPEED_INCREMENT 0.333
+
+// TEXT
+#define MAX_TEXT_LENGTH 20

@@ -1,4 +1,5 @@
 #include "Spaceship.h"
+#include "visuals.h"
 #include <iostream>
 
 Spaceship::Spaceship(GLdouble look) : Model(), look(look)
@@ -21,7 +22,19 @@ void Spaceship::draw()
 {
 	glPushMatrix();
 
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+	float mat_specular[] = { 1, 1, 1, 1.0 };
+	float mat_emission[] = { 0.0, 0.0, 0.0, 1.0 };
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
+
+	glColor4f(0.2, 0.1, 0.1, 1);
+
 	Model::draw();
+
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
 	glScalef(0.7,0.7,0.7);
@@ -39,6 +52,7 @@ void Spaceship::draw()
 	this->torus2->draw();
 	glPopMatrix();
 
+	glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
 }
 

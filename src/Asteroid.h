@@ -12,6 +12,8 @@ public:
 	void draw();
 	void printPosition();
 
+	int getScore();
+
 	Asteroid(const char * file);
 	Asteroid(Asteroid *cpy); // copy constructor
 	virtual ~Asteroid();

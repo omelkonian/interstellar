@@ -19,6 +19,12 @@ Sun *sun;
 Spaceship *ship;
 StarManager *stars;
 
+// Gamification
+Score *score;
+Level *level;
+LevelManager *levelManager;
+
+
 // Variables for rotating (up, down, left, right) and zooming in/out (i, o).
 static float rotx = 0.0;
 static float roty = 0.0;
@@ -66,33 +72,24 @@ void Render()
 
 	glTranslatef(0, 0, -30); // Move camera a bit back.
 
+	level->draw();
+	score->draw();
+
 	glTranslatef(0, 0, zoomIn);
 	glTranslatef(0, 0, -zoomOut);
 
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
+	
 	//DrawAxes();
 	//globalBox->draw();
 
 	// Asteroid && ship.
-	
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	glColor4f(0.1, 0.1, 0.1, 1);
-	float mat_specular[] = { 0.992157, 0.941176, 0.807843, 1.0 };
-	float mat_emission[] = { 0.0, 0.0, 0.0, 1.0 };
-	float shininess = 10;
-
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
 	asteroidManager->draw();
 
 	ship->draw();
-
-	glDisable(GL_COLOR_MATERIAL);
 
 	// Background.
 	sun->draw();
@@ -160,15 +157,20 @@ void Idle()
 
 				endGame->timeCreated = glutGet(GLUT_ELAPSED_TIME);
 				endGame->well = new PsychedelicWell(ship->position);
-				endGame->text = new Text("GAME OVER", 0.05, ship->position);
+				endGame->text = new Text("GAME OVER", 0.05, { ship->position[0] - 5, ship->position[1], ship->position[2] + 25});
 			}
 			delete asteroidBox;
 		}
-
 		delete shipBox;
 	}
 
-	// Update stars and asteroids each frame.
+	// Update stars,asteroids and levelManager each frame.
+	if (score->score > levelManager->currentLevel * 1000) {
+		levelManager->update();
+		level->level = levelManager->currentLevel;
+		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
+	}
+
 	stars->update();
 	stars->generate(0);
 
@@ -291,12 +293,15 @@ void Setup()
 	stars = new StarManager();
 	sun = new Sun();
 	ship = new Spaceship(1.0f);
-	asteroidManager = new AsteroidManager("resources/asteroid_2.obj");
+	score = new Score();
+	level = new Level();
+	levelManager = new LevelManager(score);
+	asteroidManager = new AsteroidManager("resources/asteroid_2.obj", score);
 	
 
 	// Create light components
-	GLfloat ambientLight[] = { 0.3, 0.3, 0.3, 1.0 };
-	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat ambientLight[] = { 0, 0, 0, 1.0 };
+	GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
 	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
 
@@ -328,4 +333,9 @@ void MenuSelect(int choice)
 float randFloat(float a, float b)
 {
 	return ((b - a)*((float)rand() / RAND_MAX)) + a;
+}
+string NumberToString(int number) {
+	ostringstream ss;
+	ss << number;
+	return ss.str();
 }

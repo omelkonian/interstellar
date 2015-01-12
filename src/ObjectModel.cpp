@@ -57,6 +57,10 @@ ObjectModel::~ObjectModel() {}
 int ObjectModel::preproccessFile(const char * filename) {
 	string line;
 	ifstream obj_file(filename, ifstream::in);
+
+	if (obj_file.fail())
+		cout << "ERROR: Unable to open " << filename << endl;
+
 	while (getline(obj_file, line)) {
 		if (line.substr(0, 2) == "v ") {
 			this->vertices++;

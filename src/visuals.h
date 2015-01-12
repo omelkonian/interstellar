@@ -12,7 +12,9 @@
 #include "Endgame.h"
 #include "Text.h"
 #include "AsteroidManager.h"
-
+#include "Score.h"
+#include "Level.h"
+#include "LevelManager.h"
 
 //-------- Functions --------------------------------
 
@@ -50,3 +52,4 @@ void Mouse(int button,int state,int x,int y);
 void MenuSelect(int choice);
 
 float randFloat(float min, float max);
+std::string NumberToString(int number);

@@ -17,7 +17,22 @@ void Star::draw() {
 	glPushMatrix();
 	Model::draw();
 
-	glColor3f(1, 1, 1);
+	//glColor3f(1, 1, 1);
+	//glColor3f(randFloat(0, 1), randFloat(0, 1), randFloat(0, 1));
+
+	int gen = rand() % 3;
+	switch (gen) {
+	case 0: // red
+		glColor3f(1, 0, 0);
+		break;
+	case 1: // yellow
+		glColor3f(1, 1, 0);
+		break;
+	case 2: // orange
+		glColor3f(1, 0.5, 0);
+		break;
+	}
+
 	glutSolidSphere(this->size, 50, 50);
 
 	glPopMatrix();

@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 
 	// Create and label the main window
 	glutCreateWindow("Interstellar");
+	glutFullScreen();           // making the window full screen
 
 	// Configure various properties of the OpenGL rendering context
 	Setup();
@@ -60,7 +61,7 @@ int main(int argc, char* argv[])
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	// Start song loop.
-	//PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+	PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 
 	//Enter main event handling loop
 	glutMainLoop();

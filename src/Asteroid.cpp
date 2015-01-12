@@ -37,9 +37,12 @@ void Asteroid::randomize() {
 	float boundY = SPACESHIP_Y * (1.0 / (this->scaleFactorY));
 	this->position = { randFloat(-boundX, boundX), randFloat(-boundY, boundY), -100.0 };
 
-	// Speed
-	this->speed = { 0, 0, 1 };
+	// Rotation Speed
 	this->rspeed = { 0, -0.5, 0.5 };
+}
+
+int Asteroid::getScore() {
+	return 10 * this->scaleFactorX + 10 * this->scaleFactorY;
 }
 
 void Asteroid::printPosition() {
