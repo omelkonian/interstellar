@@ -31,12 +31,13 @@ void Asteroid::randomize() {
 	this->scale.y = randFloat(2.0, 8.0);
 	this->scale.z = randFloat(2.0, 8.0);
 	// Position in spaceship's movement boundaries.
-	float boundX = SPACESHIP_X;
-	float boundY = SPACESHIP_Y;
+	float boundX = SPACESHIP_X + 5;
+	float boundY = SPACESHIP_Y + 5;
 	this->position = { randFloat(-boundX, boundX), randFloat(-boundY, boundY), -100.0 };
 
 	// Rotation Speed
-	this->rspeed = { 0, -0.05, 0.05 };
+	float genRot = randFloat(0.01, 0.1);
+	this->rspeed = { 0, -genRot, genRot };
 
 	this->maxInit *= this->scale;
 	this->minInit *= this->scale;

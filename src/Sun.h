@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Model.h"
+#include "ObjectModel.h"
 
 class Sun : public Model {
 public:
 	// Inner Sphere
-	GLdouble innerRadius;
+	ObjectModel *innerSphere;
 
 	// Outer Sphere
 	GLdouble outerRadius;

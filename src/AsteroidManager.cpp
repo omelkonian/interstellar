@@ -30,7 +30,7 @@ void AsteroidManager::draw() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
-	glColor4f(0.4, 0.4, 0.4, 1);
+	glColor4f(0.5, 0.5, 0.5, 1);
 
 	for (Asteroid *asteroid : this->asteroids) 
 		asteroid->draw();
@@ -47,7 +47,6 @@ bool AsteroidManager::withinBounds(glm::vec3 position) {
 
 
 void AsteroidManager::update() {
-	// Generate an asteroid each 2 seconds.
 	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > this->genFrequency)
 		this->generate(this->asteroidsPerGen);
 

@@ -128,7 +128,7 @@ void Idle()
 		endGame->well->update();
 
 		if (endGame->getAge() > 1500 && endGame->getAge() < 13000)
-			zoomOut += 0.2;
+			zoomOut += 0.5;
 
 		// Darken atmosphere (reset lighting).
 		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
@@ -165,8 +165,9 @@ void Idle()
 
 	// Update stars,asteroids and levelManager each frame.
 	if (score->score > levelManager->currentLevel * 1000) {
-		if (levelManager->currentLevel + 1 % 10 == 0) // increase asteroidPerGen every 10 levels.
+		if ((levelManager->currentLevel + 1) % 10 == 0) // increase asteroidPerGen every 10 levels.
 			asteroidManager->asteroidsPerGen++;
+	
 		levelManager->update();
 		level->level = levelManager->currentLevel;
 		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
@@ -331,7 +332,7 @@ void Setup()
 	else { // restarting
 		// Song reset.
 		PlaySound(NULL, 0, 0);
-		//PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+		PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 
 		// Static variables reset.
 		ended = false;
