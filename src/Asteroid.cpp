@@ -12,7 +12,7 @@ Asteroid::Asteroid(Asteroid const &cpy) : ObjectModel(cpy)
 	this->timeOld = glutGet(GLUT_ELAPSED_TIME);
 }
 
-Asteroid::Asteroid(const char * file) : ObjectModel(file) 
+Asteroid::Asteroid(const char * file) : ObjectModel(file, "resources/rock.jpg")
 {
 
 }
@@ -21,7 +21,7 @@ Asteroid::~Asteroid() {}
 
 void Asteroid::draw() {
 	glPushMatrix();
-	glColor3f(0.3, 0.15, 0);
+	glColor3f(0.8, 0.8, 0.8);
 	ObjectModel::draw();
 	glPopMatrix();
 	this->drawBounds();

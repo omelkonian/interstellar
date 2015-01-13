@@ -4,9 +4,9 @@
 
 Spaceship::Spaceship(GLdouble look) : Model(), look(look)
 {
-	this->ship = new ObjectModel("resources/spaceship.obj");
-	this->torus = new ObjectModel("resources/torus.obj");
-	this->torus2 = new ObjectModel("resources/torus.obj");
+	this->ship = new ObjectModel("resources/spaceship.obj","resources/metal.jpg");
+	this->torus = new ObjectModel("resources/torus.obj", "resources/metal.jpg");
+	this->torus2 = new ObjectModel("resources/torus.obj", "resources/metal.jpg");
 	this->minInit = { -4, -4, -4 };
 	this->maxInit = { 4, 4, 4 };
 	this->positionBound = &this->position;
@@ -43,6 +43,7 @@ void Spaceship::draw()
 
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
+	glColor3f(1, 1, 1);
 	this->ship->draw();
 	glPopMatrix();
 

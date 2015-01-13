@@ -6,7 +6,7 @@ using namespace std;
 
 Star::Star() : Model() {
 	float angle = randFloat(-4.0, 4.0);
-	this->size = randFloat(0.05, 0.2);
+	this->size = randFloat(0.2, 0.8);
 	this->acceleration = { 0.00001 * cos(angle), 0.00001 * sin(angle), 0 };
 	this->position.z = STAR_INITIAL_Z;
 	this->speed = { STAR_SPEED * cos(angle), STAR_SPEED * sin(angle), 0.001f };
