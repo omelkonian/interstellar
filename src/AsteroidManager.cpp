@@ -7,8 +7,10 @@ using namespace std;
 
 AsteroidManager::AsteroidManager(char *filename, Score *scorePtr) {
 	this->mainModel = new Asteroid(filename);
-	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME) - 2000;
+	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME) - ASTEROID_INITIAL_GEN_FREQUENCY;
 	this->asteroidSpeed = ASTEROID_INITIAL_SPEED;
+	this->genFrequency = ASTEROID_INITIAL_GEN_FREQUENCY;
+	this->asteroidsPerGen = 1;
 	this->currentScore = scorePtr;
 }
 
@@ -28,7 +30,7 @@ void AsteroidManager::draw() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
-	glColor4f(0.1, 0.1, 0.1, 1);
+	glColor4f(0.4, 0.4, 0.4, 1);
 
 	for (Asteroid *asteroid : this->asteroids) 
 		asteroid->draw();
@@ -46,8 +48,8 @@ bool AsteroidManager::withinBounds(glm::vec3 position) {
 
 void AsteroidManager::update() {
 	// Generate an asteroid each 2 seconds.
-	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > 2000)
-		this->generate();
+	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > this->genFrequency)
+		this->generate(this->asteroidsPerGen);
 
 	if (!asteroids.empty()) {
 		Asteroid * asteroid = asteroids.front();
@@ -59,11 +61,20 @@ void AsteroidManager::update() {
 	}
 }
 
-void AsteroidManager::generate() {
-	Asteroid * a = new Asteroid(*this->mainModel);
-	a->randomize();
-	a->updateBounds();
-	a->speed = { 0, 0, this->asteroidSpeed };
-	asteroids.push_back(a);
-	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME);
+void AsteroidManager::generate(int times) {
+	for (int i = 0; i < times; i++) {
+		Asteroid * a = new Asteroid(*this->mainModel);
+		a->randomize();
+		a->updateBounds();
+		a->speed = { 0, 0, this->asteroidSpeed };
+		asteroids.push_back(a);
+		this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME);
+	}
+}
+
+void AsteroidManager::drawBounds() {
+	for (Asteroid *a : this->asteroids) {
+		a->doPhysics();
+		a->drawBounds();
+	}
 }

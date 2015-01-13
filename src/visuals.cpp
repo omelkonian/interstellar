@@ -94,9 +94,11 @@ void Render()
 
 	// Asteroid.
 	asteroidManager->draw();
+	//asteroidManager->drawBounds();
 
 	// Ship.
 	ship->draw();
+	//ship->drawBounds();
 
 	glutSwapBuffers();
 }
@@ -126,7 +128,7 @@ void Idle()
 		endGame->well->update();
 
 		if (endGame->getAge() > 1500 && endGame->getAge() < 13000)
-			zoomOut += 0.1;
+			zoomOut += 0.2;
 
 		// Darken atmosphere (reset lighting).
 		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
@@ -163,15 +165,19 @@ void Idle()
 
 	// Update stars,asteroids and levelManager each frame.
 	if (score->score > levelManager->currentLevel * 1000) {
+		if (levelManager->currentLevel + 1 % 10 == 0) // increase asteroidPerGen every 10 levels.
+			asteroidManager->asteroidsPerGen++;
 		levelManager->update();
 		level->level = levelManager->currentLevel;
 		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
+		asteroidManager->genFrequency -= ASTEROID_GEN_FREQUENCY_DECREMENT;
 	}
 
 	if (!ended)
 		asteroidManager->update();
 	
 	stars->update();
+
 	// Sun animation.
 	sun->animate();
 
@@ -325,7 +331,7 @@ void Setup()
 	else { // restarting
 		// Song reset.
 		PlaySound(NULL, 0, 0);
-		PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+		//PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 
 		// Static variables reset.
 		ended = false;
@@ -355,8 +361,10 @@ void Setup()
 		glEnable(GL_LIGHT0);
 		glEnable(GL_NORMALIZE);
 
-		// Asteroid speeds reset.
+		// Asteroid manager reset.
 		asteroidManager->asteroidSpeed = ASTEROID_INITIAL_SPEED;
+		asteroidManager->genFrequency = ASTEROID_INITIAL_GEN_FREQUENCY;
+		asteroidManager->asteroidsPerGen = 1;
 
 		// Level, Score reset.
 		level->level = 1;
@@ -380,7 +388,6 @@ void MenuSelect(int choice)
 	default:
 		break;
 	}
-
 }
 
 float randFloat(float a, float b)

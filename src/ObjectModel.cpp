@@ -177,6 +177,7 @@ void ObjectModel::draw() {
 void ObjectModel::constructBounds() {
 	this->minInit = { +FLT_MAX, +FLT_MAX, +FLT_MAX };
 	this->maxInit = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+	
 	for (int i = 0; i < this->vertices; i++) {
 		glm::vec3 vertex = this->_vertices[i];
 

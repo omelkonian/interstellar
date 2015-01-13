@@ -30,7 +30,8 @@ AABB::~AABB() {}
 void AABB::drawBounds() {
 	this->updateBounds();
 	glPushMatrix();
-	glColor3f(0.6, 0.6, 0.6);
+	glDisable(GL_LIGHTING);
+	glColor3f(1, 1, 1);
 	glBegin(GL_LINES);
 	glVertex3f(max.x, max.y, max.z);
 	glVertex3f(max.x, min.y, max.z);
@@ -61,6 +62,7 @@ void AABB::drawBounds() {
 	glVertex3f(max.x, min.y, max.z);
 
 	glEnd();
+	glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
 

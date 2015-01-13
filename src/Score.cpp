@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-Score::Score() : Text(NumberToString(0).insert(0,"Score: ").c_str(), 0.01, {-SPACESHIP_X-5, SPACESHIP_Y+7, -20}) {
+Score::Score() : Text(NumberToString(0).insert(0, "Score: ").c_str(), TEXT_SIZE, { -SPACESHIP_X, SPACESHIP_Y-3, TEXT_Z }) {
 	this->score = 0;
 }
 

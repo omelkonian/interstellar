@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-Level::Level() : Text(NumberToString(1).insert(0, "Level: ").c_str(), 0.01, { -SPACESHIP_X - 5, SPACESHIP_Y + 10, -20 }) {
+Level::Level() : Text(NumberToString(1).insert(0, "Level: ").c_str(), TEXT_SIZE, { -SPACESHIP_X, SPACESHIP_Y, TEXT_Z }) {
 	this->level = 1;
 }
 

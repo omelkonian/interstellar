@@ -7,8 +7,8 @@ Endgame::Endgame(GLfloat ambientLight[4], GLfloat diffuseLight[4], GLfloat specu
 	this->lightPos[0] = lightPos[0]; this->lightPos[1] = lightPos[1]; this->lightPos[2] = lightPos[2];
 	this->timesDarkened = 0;
 
-	this->quitText = new Text("Press Escape to quit game.", 0.01, { -SPACESHIP_X - 5, -SPACESHIP_Y + 3, -20 });
-	this->restartText = new Text("Press R to restart game.", 0.01, { -SPACESHIP_X - 5, -SPACESHIP_Y, -20 });
+	this->quitText = new Text("Press Escape to quit game.", TEXT_SIZE, { -SPACESHIP_X, -SPACESHIP_Y, TEXT_Z });
+	this->restartText = new Text("Press R to restart game.", TEXT_SIZE, { -SPACESHIP_X, -SPACESHIP_Y + 3, TEXT_Z });
 }
 
 Endgame::~Endgame() {

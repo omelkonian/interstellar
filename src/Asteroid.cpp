@@ -21,10 +21,8 @@ Asteroid::~Asteroid() {}
 
 void Asteroid::draw() {
 	glPushMatrix();
-	glColor3f(0.8, 0.8, 0.8);
 	ObjectModel::draw();
 	glPopMatrix();
-	this->drawBounds();
 }
 
 void Asteroid::randomize() {
@@ -33,12 +31,15 @@ void Asteroid::randomize() {
 	this->scale.y = randFloat(2.0, 8.0);
 	this->scale.z = randFloat(2.0, 8.0);
 	// Position in spaceship's movement boundaries.
-	float boundX = SPACESHIP_X * (1.0 / (this->scale.x));
-	float boundY = SPACESHIP_Y * (1.0 / (this->scale.y));
+	float boundX = SPACESHIP_X;
+	float boundY = SPACESHIP_Y;
 	this->position = { randFloat(-boundX, boundX), randFloat(-boundY, boundY), -100.0 };
 
 	// Rotation Speed
 	this->rspeed = { 0, -0.05, 0.05 };
+
+	this->maxInit *= this->scale;
+	this->minInit *= this->scale;
 }
 
 int Asteroid::getScore() {
