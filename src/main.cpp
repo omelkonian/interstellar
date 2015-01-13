@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 	// Define the main window size and initial position 
 	// ( upper left corner, boundaries included )
-	glutInitWindowSize(1280, 720);
+	glutInitWindowSize(1920, 1080);
 	glutInitWindowPosition(0, 0);
 
 	// Create and label the main window

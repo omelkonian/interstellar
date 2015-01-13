@@ -31,7 +31,7 @@ ObjectModel::ObjectModel(ObjectModel *cpy) : Model()
 	this->normalsFile = cpy->normalsFile;
 }
 
-ObjectModel::ObjectModel(const char * file) : Model()
+ObjectModel::ObjectModel(const char * file, const char * texture) : Model()
 {
 	this->faces = this->normals = this->texels = this->vertices = 0;
 	this->preproccessFile(file);
@@ -44,6 +44,12 @@ ObjectModel::ObjectModel(const char * file) : Model()
 	this->_normals = (vec3*)malloc(this->faces * sizeof(vec3));
 	this->load_obj(file);
 	constructBounds();
+	if (texture != NULL) {
+		this->texture = loadTexture(texture);
+	}
+	else {
+		this->texture = 0;
+	}
 	//this->print();
 }
 
@@ -53,7 +59,15 @@ void ObjectModel::freeResources() {
 	free(this->_normals);
 }
 
-ObjectModel::~ObjectModel() {}
+ObjectModel::~ObjectModel() {
+	return;
+	if (texture != 0) {
+		glDeleteTextures(1, &texture);
+	}
+	free(this->verticesFile);
+	free(this->texCoordsFile);
+	free(this->normalsFile);
+}
 
 int ObjectModel::preproccessFile(const char * filename) {
 	string line;
@@ -134,6 +148,12 @@ int ObjectModel::load_obj(const char * filename) {
 }
 
 void ObjectModel::draw() {
+	if (texture != 0) {
+		glDisable(GL_LIGHTING);
+		glEnable(GL_SMOOTH);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture);
+	}
 	glPushMatrix();
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -149,6 +169,11 @@ void ObjectModel::draw() {
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glPopMatrix();
+	if (texture != 0) {
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_SMOOTH);
+		glEnable(GL_LIGHTING);
+	}
 }
 
 void ObjectModel::constructBounds() {
@@ -191,4 +216,36 @@ void ObjectModel::print() {
 	for (int i = 0; i < this->faces; i++) {
 		//printf("i %d %d %d\n", this->_indices[3 * i], this->_indices[3 * i + 1], this->_indices[3 * i + 2]);
 	}
+}
+
+GLuint ObjectModel::loadTexture(const char * textureName) {
+	unsigned char * image;
+	unsigned int texture;
+	image = SOIL_load_image(textureName, &width, &height, &channels, SOIL_LOAD_RGB);
+	glGenTextures(1, &texture);
+
+	// select our current texture
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// select modulate to mix texture with color for shading
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	// when texture area is small, bilinear filter the closest MIP map
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_LINEAR_MIPMAP_NEAREST);
+	// when texture area is large, bilinear filter the first MIP map
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// if wrap is true, the texture wraps over at the edges (repeat)
+	//       ... false, the texture ends at the edges (clamp)
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	// build our texture MIP maps
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width,
+		height, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	// free buffer
+	SOIL_free_image_data(image);
+	return texture;
 }

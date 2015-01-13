@@ -7,7 +7,7 @@ class ObjectModel :
 	public Model
 {
 public:
-	ObjectModel(const char * file);
+	ObjectModel(const char * file, const char * texture = NULL);
 	ObjectModel(ObjectModel *cpy); // copy constructor
 	~ObjectModel();
 
@@ -27,7 +27,12 @@ protected:
 	int preproccessFile(const char * filename);
 	int load_obj(const char * filename);
 private:
+	int width;
+	int height;
+	int channels;
+	GLuint texture;
 	void constructBounds();
+	GLuint loadTexture(const char * textureName);
 	int vertices;
 	int normals;
 	int texels;
