@@ -30,11 +30,8 @@ void AsteroidManager::draw() {
 
 	glColor4f(0.1, 0.1, 0.1, 1);
 
-	for (Asteroid *asteroid : this->asteroids) {
+	for (Asteroid *asteroid : this->asteroids) 
 		asteroid->draw();
-		//asteroid->drawBounds();
-		//asteroid->printBounds();
-	}
 
 	glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
@@ -68,6 +65,5 @@ void AsteroidManager::generate() {
 	a->updateBounds();
 	a->speed = { 0, 0, this->asteroidSpeed };
 	asteroids.push_back(a);
-	a->printPosition();
 	this->lastTimestamp = glutGet(GLUT_ELAPSED_TIME);
 }

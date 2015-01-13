@@ -62,7 +62,7 @@ void Render()
 		return;
 
 	if (ended) {
-		endGame->renderEndgame(asteroidManager, sun, stars, rotx, roty, zoomIn, zoomOut);
+		endGame->renderEndgame(asteroidManager, sun, stars, rotx, roty, zoomIn, zoomOut, environment, level, score);
 		return;
 	}
 
@@ -72,6 +72,7 @@ void Render()
 
 	glTranslatef(0, 0, -30); // Move camera a bit back.
 
+	// Display Texts.
 	level->draw();
 	score->draw();
 
@@ -81,27 +82,23 @@ void Render()
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
-	
 	//DrawAxes();
 	//globalBox->draw();
 
-	// Asteroid && ship.
-	glDisable(GL_LIGHTING);
+	// Background.	
 	environment->draw();
-	glEnable(GL_LIGHTING);
-	asteroidManager->draw();
 
-	ship->draw();
-	//ship->drawBounds();
-	
-	// Background.
 	sun->draw();
 
 	stars->draw();
 
-	glutSwapBuffers();             // All drawing commands applied to the 
-	// hidden buffer, so now, bring forward
-	// the hidden buffer and hide the visible one
+	// Asteroid.
+	asteroidManager->draw();
+
+	// Ship.
+	ship->draw();
+
+	glutSwapBuffers();
 }
 
 //-----------------------------------------------------------
@@ -125,10 +122,10 @@ void Idle()
 
 	// Update psychedelic well.
 	if (ended) {
-		if (endGame->getAge() > 0 && endGame->getAge() < 500)
+
 		endGame->well->update();
 
-		if (endGame->getAge() > 1500 && endGame->getAge() < 5000)
+		if (endGame->getAge() > 1500 && endGame->getAge() < 13000)
 			zoomOut += 0.1;
 
 		// Darken atmosphere (reset lighting).
@@ -145,29 +142,23 @@ void Idle()
 		endGame->updateLighting();
 
 		glEnable(GL_LIGHT1);
-
-		if (endGame->getAge() > 25000)
-			exit(1);
 	}
 
 	// Collision detection.
 	if (!ended) {
-		//AABB *shipBox = ship->getAABB();
 		for (Asteroid *a : asteroidManager->asteroids) {
-			//AABB *asteroidBox = a->getAABB();
 			if (ship->intersects(a)) {
 				ended = true;
 				animate = true;
 
 				endGame->timeCreated = glutGet(GLUT_ELAPSED_TIME);
 				endGame->well = new PsychedelicWell(ship->position);
-				endGame->text = new Text("GAME OVER", 0.05, { ship->position[0] - 5, ship->position[1], ship->position[2] + 25});
+				endGame->gameOverText = new Text("GAME OVER", 0.05, { ship->position[0] - 5, ship->position[1] - 10, ship->position[2] + 25 });
+				endGame->gameOverText->color = { 1, 0, 0 };
 			}
-			//delete asteroidBox;
 		}
 		
 		stars->generate(0);
-		asteroidManager->update();
 	}
 
 	// Update stars,asteroids and levelManager each frame.
@@ -177,6 +168,8 @@ void Idle()
 		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
 	}
 
+	if (!ended)
+		asteroidManager->update();
 	
 	stars->update();
 	// Sun animation.
@@ -216,7 +209,11 @@ void Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		ship->speed[0] = 0.055;
 		break;
-	case SPACEBAR:
+	case 'r':
+		if (ended)
+			endGame->restart();
+		break;
+ 	case SPACEBAR:
 		paused = !paused;
 		break;
 	case ESCAPE:
@@ -285,44 +282,89 @@ void Mouse(int button, int state, int x, int y)
 
 void Setup()
 {
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
-	glClearDepth(1);
+	if (!ended) {
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
+		glClearDepth(1);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
-	stars = new StarManager();
-	sun = new Sun();
-	environment = new Environment();
-	ship = new Spaceship(1.0f);
-	score = new Score();
-	level = new Level();
-	levelManager = new LevelManager(score);
-	asteroidManager = new AsteroidManager("resources/asteroid_2.obj", score);
-	
+		globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
+		stars = new StarManager();
+		sun = new Sun();
+		environment = new Environment();
+		ship = new Spaceship(1.0f);
+		score = new Score();
+		level = new Level();
+		levelManager = new LevelManager(score);
+		asteroidManager = new AsteroidManager("resources/asteroid_2.obj", score);
 
-	// Create light components
-	GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
-	GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
-	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
 
-	endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
+		// Create light components
+		GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
+		GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
+		GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
 
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-	glLightfv(GL_LIGHT0, GL_POSITION, position);
+		endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+		glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-	glEnable(GL_CULL_FACE);
-	//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
-	glFrontFace(GL_CCW);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glEnable(GL_NORMALIZE);
+
+		glEnable(GL_CULL_FACE);
+		//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
+		glFrontFace(GL_CCW);
+	}
+	else { // restarting
+		// Song reset.
+		PlaySound(NULL, 0, 0);
+		PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+
+		// Static variables reset.
+		ended = false;
+		paused = false;
+		animate = false;
+		rotx = 0;
+		roty = 0;
+		zoomIn = 0;
+		zoomOut = 0;
+
+		// Lighting reset.
+		glDisable(GL_LIGHT1);
+		delete endGame;
+		GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
+		GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
+		GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
+
+		endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
+
+		glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+		glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glEnable(GL_NORMALIZE);
+
+		// Asteroid speeds reset.
+		asteroidManager->asteroidSpeed = ASTEROID_INITIAL_SPEED;
+
+		// Level, Score reset.
+		level->level = 1;
+		score->score = 0;
+
+		// Spaceship position reset.
+		ship->position = { 0, 0, 0 };
+	}
 }
 
 void MenuSelect(int choice)

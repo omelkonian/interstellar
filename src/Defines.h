@@ -11,10 +11,10 @@
 #define ESCAPE 27
 
 // BOUNDING BOX
-#define X_MAX 50
-#define X_MIN -50
-#define Y_MAX 50
-#define Y_MIN -50
+#define X_MAX 100
+#define X_MIN -100
+#define Y_MAX 100
+#define Y_MIN -100
 #define Z_MAX 20
 #define Z_MIN -100
 
@@ -24,7 +24,7 @@
 
 // STARS
 #define STAR_INITIAL_Z -100
-#define STAR_NUMBER 50
+#define STAR_NUMBER 80
 #define STAR_SPEED 0.01f
 
 // ASTEROIDS
@@ -33,3 +33,14 @@
 
 // TEXT
 #define MAX_TEXT_LENGTH 20
+
+// PSYCHEDELIC WELL
+#define RANDOM_ITEM_NO 35
+#define RANDOM_ITEM_MIN_SPEED -0.02
+#define RANDOM_ITEM_MAX_SPEED 0.02
+#define RANDOM_ITEM_MIN_ROT_SPEED -0.01
+#define RANDOM_ITEM_MAX_ROT_SPEED 0.01
+
+// ENDGAME
+#define DARKEN_DECREMENT 0.01
+#define DARKEN_TIMES 75

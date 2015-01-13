@@ -5,9 +5,9 @@ RandomItem::RandomItem() : Model() {}
 
 void RandomItem::randomize() {
 	this->position = { this->position.x + randFloat(-4, 4), this->position.y + randFloat(-4, 4), this->position.z + randFloat(-4, 4) };
-	this->speed = { randFloat(-0.1,0.1), randFloat(-0.1,0.1), randFloat(-0.1,0.1) };
-	this->rspeed = { randFloat(-0.1,0.1), randFloat(-0.1,0.1), randFloat(-0.1,0.1) };
-	this->color = { randFloat(0, 1), randFloat(0, 1), randFloat(0, 1) };
+	this->speed = { randFloat(RANDOM_ITEM_MIN_SPEED, RANDOM_ITEM_MAX_SPEED), randFloat(RANDOM_ITEM_MIN_SPEED, RANDOM_ITEM_MAX_SPEED), randFloat(RANDOM_ITEM_MIN_SPEED, RANDOM_ITEM_MAX_SPEED) };
+	this->rspeed = { randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED), randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED), randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED) };
+	this->color = { randFloat(0.1, 1), randFloat(0.1, 1), randFloat(0.1, 1) };
 	this->shape = rand() % 7;
 }
 
@@ -22,19 +22,19 @@ void RandomItem::draw() {
 
 	switch (this->shape) {
 	case 0: // cone
-		glScalef(randFloat(1, 4), randFloat(1, 4), randFloat(1, 4));
+		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
 		glutSolidCone(1, 1, 50, 50);
 		break;
 	case 1: // cube
-		glScalef(randFloat(1, 4), randFloat(1, 4), randFloat(1, 4));
+		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
 		glutSolidCube(1);
 		break;
 	case 2: // octahedron
-		glScalef(randFloat(1, 4), randFloat(1, 4), randFloat(1, 4));
+		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
 		glutSolidOctahedron();
 		break;
 	case 3: // dodecahedron
-		glScalef(randFloat(1, 4), randFloat(1, 4), randFloat(1, 4));
+		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
 		glutSolidDodecahedron();
 		break;
 	case 4: // sphere

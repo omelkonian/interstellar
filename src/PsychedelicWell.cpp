@@ -5,12 +5,10 @@
 
 #include <iostream>
 
-#define ITEM_NO 30
-
 using namespace std;
 
-PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ 10, 10, 20 }, {-20,-10,-10}, &position) {
-	for (int i = 0; i < ITEM_NO; i++) {
+PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ 40, 40, 40 }, {-40,-40,-40}, &position) {
+	for (int i = 0; i < RANDOM_ITEM_NO; i++) {
 		RandomItem *s = new RandomItem();
 		s->randomize();
 		s->position = this->position;
@@ -22,6 +20,7 @@ PsychedelicWell::~PsychedelicWell() {}
 
 void PsychedelicWell::draw() {
 	glPushMatrix();
+	//glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
@@ -30,6 +29,7 @@ void PsychedelicWell::draw() {
 	}
 
 	glDisable(GL_COLOR_MATERIAL);
+	//glDisable(GL_LIGHTING);
 	glPopMatrix();
 }
 

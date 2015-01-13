@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Windows.h>
+#include <mmsystem.h>
+
 #include "Model.h"
 #include "ObjectModel.h"
 #include "Sun.h"

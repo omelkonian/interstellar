@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
 	// Create and label the main window
 	glutCreateWindow("Interstellar");
-	//glutFullScreen();
+	glutFullScreen();
 	// Configure various properties of the OpenGL rendering context
 	Setup();
 
