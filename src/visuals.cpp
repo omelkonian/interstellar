@@ -86,7 +86,9 @@ void Render()
 	//globalBox->draw();
 
 	// Asteroid && ship.
+	glDisable(GL_LIGHTING);
 	environment->draw();
+	glEnable(GL_LIGHTING);
 	asteroidManager->draw();
 
 	ship->draw();

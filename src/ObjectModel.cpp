@@ -149,7 +149,6 @@ int ObjectModel::load_obj(const char * filename) {
 
 void ObjectModel::draw() {
 	if (texture != 0) {
-		glDisable(GL_LIGHTING);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -172,7 +171,6 @@ void ObjectModel::draw() {
 	if (texture != 0) {
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_SMOOTH);
-		glEnable(GL_LIGHTING);
 	}
 }
 
