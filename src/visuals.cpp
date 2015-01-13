@@ -18,7 +18,7 @@ AsteroidManager *asteroidManager;
 Sun *sun;
 Spaceship *ship;
 StarManager *stars;
-
+Environment * environment;
 // Gamification
 Score *score;
 Level *level;
@@ -86,12 +86,12 @@ void Render()
 	//globalBox->draw();
 
 	// Asteroid && ship.
-
+	environment->draw();
 	asteroidManager->draw();
 
 	ship->draw();
-	ship->drawBounds();
-
+	//ship->drawBounds();
+	
 	// Background.
 	sun->draw();
 
@@ -293,6 +293,7 @@ void Setup()
 	globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
 	stars = new StarManager();
 	sun = new Sun();
+	environment = new Environment();
 	ship = new Spaceship(1.0f);
 	score = new Score();
 	level = new Level();
@@ -301,7 +302,7 @@ void Setup()
 	
 
 	// Create light components
-	GLfloat ambientLight[] = { 0, 0, 0, 1.0 };
+	GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
 	GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
 	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.

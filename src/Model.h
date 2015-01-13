@@ -6,7 +6,7 @@
  */
 
 #pragma once
-
+#pragma comment(lib, "gl/libSOIL.lib")
 #include "../gl/glm/glm.hpp"
 #include "../gl/glut.h"
 #include "../gl/SOIL.h"

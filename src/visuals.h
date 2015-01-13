@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Point.h"
-#include "Face.h"
 #include "Model.h"
 #include "ObjectModel.h"
 #include "Sun.h"
@@ -14,6 +12,7 @@
 #include "AsteroidManager.h"
 #include "Score.h"
 #include "Level.h"
+#include "Environment.h"
 #include "LevelManager.h"
 
 //-------- Functions --------------------------------
