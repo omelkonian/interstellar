@@ -27,9 +27,9 @@ void Asteroid::draw() {
 
 void Asteroid::randomize() {
 	// Shape
-	this->scale.x = randFloat(2.0, 8.0);
-	this->scale.y = randFloat(2.0, 8.0);
-	this->scale.z = randFloat(2.0, 8.0);
+	this->scale.x = randFloat(2.0, 12.0);
+	this->scale.y = randFloat(2.0, 12.0);
+	this->scale.z = randFloat(2.0, 12.0);
 	// Position in spaceship's movement boundaries.
 	float boundX = SPACESHIP_X + 5;
 	float boundY = SPACESHIP_Y + 5;

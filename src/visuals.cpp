@@ -165,17 +165,13 @@ void Idle()
 
 	// Update stars,asteroids and levelManager each frame.
 	if (score->score > levelManager->currentLevel * 1000) {
-		if ((levelManager->currentLevel + 1) % 10 == 0) // increase asteroidPerGen every 10 levels.
-			asteroidManager->asteroidsPerGen++;
-	
 		levelManager->update();
 		level->level = levelManager->currentLevel;
-		asteroidManager->asteroidSpeed += ASTEROID_SPEED_INCREMENT;
-		asteroidManager->genFrequency -= ASTEROID_GEN_FREQUENCY_DECREMENT;
+		asteroidManager->levelUp(levelManager->currentLevel);
 	}
 
 	if (!ended)
-		asteroidManager->update();
+		asteroidManager->update(ship->position);
 	
 	stars->update();
 

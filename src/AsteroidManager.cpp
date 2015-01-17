@@ -46,9 +46,9 @@ bool AsteroidManager::withinBounds(glm::vec3 position) {
 }
 
 
-void AsteroidManager::update() {
+void AsteroidManager::update(glm::vec3 spaceshipPos) {
 	if (glutGet(GLUT_ELAPSED_TIME) - this->lastTimestamp > this->genFrequency)
-		this->generate(this->asteroidsPerGen);
+		this->generate(spaceshipPos);
 
 	if (!asteroids.empty()) {
 		Asteroid * asteroid = asteroids.front();
@@ -60,10 +60,19 @@ void AsteroidManager::update() {
 	}
 }
 
-void AsteroidManager::generate(int times) {
-	for (int i = 0; i < times; i++) {
+void AsteroidManager::levelUp(int level) {
+	this->asteroidSpeed += (this->asteroidSpeed < ASTEROID_MAX_SPEED) ? ASTEROID_SPEED_INCREMENT : 0;
+	this->genFrequency -= (this->genFrequency > ASTEROID_MIN_GEN_FREQUENCY) ? ASTEROID_GEN_FREQUENCY_DECREMENT : 0;
+	if ((level % 10) == 0)		// increase asteroidPerGen every 10 levels.
+		this->asteroidsPerGen += (this->asteroidsPerGen < ASTEROID_MAX_ASTEROIDS_PER_GEN) ? 1 : 0;
+}
+
+void AsteroidManager::generate(glm::vec3 spaceshipPos) {
+	for (int i = 0; i < this->asteroidsPerGen; i++) {
 		Asteroid * a = new Asteroid(*this->mainModel);
 		a->randomize();
+		a->position.x = spaceshipPos.x + randFloat(-10, 10);
+		a->position.y = spaceshipPos.y + randFloat(-10, 10);
 		a->updateBounds();
 		a->speed = { 0, 0, this->asteroidSpeed };
 		asteroids.push_back(a);

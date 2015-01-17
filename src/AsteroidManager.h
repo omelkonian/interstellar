@@ -17,9 +17,11 @@ public:
 
 	AsteroidManager(char *filename, Score *scorePtr);
 	~AsteroidManager();
-	void generate(int times);
+	void generate(glm::vec3 spaceshipPos);
 	void draw();
-	void update();
+	void update(glm::vec3 spaceshipPos);
+
+	void levelUp(int level);
 
 	void drawBounds();
 
