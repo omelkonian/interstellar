@@ -124,11 +124,14 @@ void Idle()
 
 	// Update psychedelic well.
 	if (ended) {
+		glDisable(GL_LIGHT0);
+		animate = true;
 
 		endGame->well->update();
-
-		if (endGame->getAge() > 1500 && endGame->getAge() < 13000)
-			zoomOut += 0.5;
+	
+		zoomOut += 0.2;
+		if (endGame->getAge() > 5000)
+			zoomOut += 0.1*((endGame->getAge() - 5000) / 2000);
 
 		// Darken atmosphere (reset lighting).
 		GLfloat ambientLight[] = { endGame->ambient[0], endGame->ambient[1], endGame->ambient[2], 1.0 };
@@ -180,8 +183,8 @@ void Idle()
 
 	// Left-click animation.
 	if (animate) {
-		rotx += 0.02;
-		roty += 0.02;
+		rotx += 0.04;
+		roty += 0.04;
 	}
 
 	glutPostRedisplay();
@@ -227,9 +230,11 @@ void Keyboard(unsigned char key, int x, int y)
 		delete sun;
 		delete environment;
 		delete globalBox;
-		delete level;
-		delete score;
-		delete levelManager;
+		if (!ended) {
+			delete level;
+			delete score;
+			delete levelManager;
+		}
 
 		exit(0);
 		break;
@@ -305,13 +310,18 @@ void Setup()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		globalBox = new AABB(X_MAX, Y_MAX, Z_MAX, X_MIN, Y_MIN, Z_MIN);
+		printf("Creating the stars \n");
 		stars = new StarManager();
+		printf("Creating the sun \n");
 		sun = new Sun();
+		printf("Creating the background \n");
 		environment = new Environment();
+		printf("Creating the spaceship \n");
 		ship = new Spaceship(1.0f);
 		score = new Score();
 		level = new Level();
 		levelManager = new LevelManager(score);
+		printf("Creating the asteroids \n");
 		asteroidManager = new AsteroidManager("resources/asteroid_2.obj", score);
 		endGame = new Endgame();
 
@@ -330,9 +340,11 @@ void Setup()
 		glEnable(GL_LIGHT0);
 		glEnable(GL_NORMALIZE);
 
+
 		glEnable(GL_CULL_FACE);
-		//glFrontFace(GL_CW); // everything drawn by glut primitives has cw orientation, asteroid is cw
 		glFrontFace(GL_CCW);
+
+		printf("Game created \n");
 	}
 	else { // restarting
 		
@@ -354,16 +366,30 @@ void Setup()
 		glEnable(GL_LIGHT0);
 
 		// Asteroid manager reset.
+		asteroidManager->erase();
 		asteroidManager->asteroidSpeed = ASTEROID_INITIAL_SPEED;
 		asteroidManager->genFrequency = ASTEROID_INITIAL_GEN_FREQUENCY;
 		asteroidManager->asteroidsPerGen = 1;
 
 		// Level, Score reset.
-		level->level = 1;
-		score->score = 0;
+		delete levelManager;
+		delete score;
+		delete level;
 
+		score = new Score();
+		asteroidManager->currentScore = score;
+		level = new Level();
+		levelManager = new LevelManager(score);
+
+		
 		// Spaceship position reset.
 		ship->position = { 0, 0, 0 };
+
+		// Environment reset.
+		environment->position = { 5, 5, -10 };
+		environment->scale = { 500, 500, 500 };
+		environment->rposition = { 0, 180, 0 };
+		environment->rspeed = { 0.0001f, 0.001f, -0.001f };
 	}
 }
 

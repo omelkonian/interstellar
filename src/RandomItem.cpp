@@ -9,36 +9,36 @@ void RandomItem::randomize() {
 	this->rspeed = { randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED), randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED), randFloat(RANDOM_ITEM_MIN_ROT_SPEED, RANDOM_ITEM_MAX_ROT_SPEED) };
 	this->color = { randFloat(0.1, 1), randFloat(0.1, 1), randFloat(0.1, 1) };
 	this->shape = rand() % 7;
+	this->scale = { randFloat(0.3, 0.8), randFloat(0.3, 0.8), randFloat(0.3, 0.8) };
 }
 
 RandomItem::~RandomItem(){}
 
 void RandomItem::draw() {
 	glPushMatrix();
-	glScalef(0.5, 0.5, 0.5);
 	Model::draw();
 	
 	glColor3f(this->color.x, this->color.y, this->color.z);
 
 	switch (this->shape) {
 	case 0: // cone
-		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
+		glScalef(randFloat(2, 2.3), randFloat(2, 2.3), randFloat(2, 2.3));
 		glutSolidCone(1, 1, 50, 50);
 		break;
 	case 1: // cube
-		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
+		glScalef(randFloat(2, 2.3), randFloat(2, 2.3), randFloat(2, 2.3));
 		glutSolidCube(1);
 		break;
 	case 2: // octahedron
-		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
+		glScalef(randFloat(2, 2.3), randFloat(2, 2.3), randFloat(2, 2.3));
 		glutSolidOctahedron();
 		break;
 	case 3: // dodecahedron
-		glScalef(randFloat(2, 3), randFloat(2, 3), randFloat(2, 3));
+		glScalef(randFloat(2, 2.3), randFloat(2, 2.3), randFloat(2, 2.3));
 		glutSolidDodecahedron();
 		break;
 	case 4: // sphere
-		glutSolidSphere(randFloat(1, 3), 50, 50);
+		glutSolidSphere(randFloat(2, 2.3), 50, 50);
 		break;
 	case 5: // triangle
 		glBegin(GL_TRIANGLES);

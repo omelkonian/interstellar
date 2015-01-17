@@ -44,13 +44,7 @@ ObjectModel::ObjectModel(const char * file, const char * texture) : Model()
 	this->_normals = (vec3*)malloc(this->faces * sizeof(vec3));
 	this->load_obj(file);
 	constructBounds();
-	if (texture != NULL) {
-		this->texture = loadTexture(texture);
-	}
-	else {
-		this->texture = 0;
-	}
-	//this->print();
+	this->texture = (this->texture) ? (loadTexture(texture)) : 0;
 }
 
 void ObjectModel::freeResources() {

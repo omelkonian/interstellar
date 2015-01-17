@@ -61,7 +61,7 @@ void Spaceship::draw()
 
 AABB* Spaceship::getAABB() {
 	float x = position.x, y = position.y, z = position.z;
-	return new AABB(x + 4, y + 4, z + 3, x - 4, y - 4, z - 4);
+	return new AABB(x + 5, y + 5, z + 4, x - 5, y - 5, z - 5);
 }
 
 void Spaceship::animate() {

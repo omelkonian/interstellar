@@ -7,13 +7,8 @@
 
 using namespace std;
 
-PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ 40, 40, 40 }, {-40,-40,-40}, &position) {
-	for (int i = 0; i < RANDOM_ITEM_NO; i++) {
-		RandomItem *s = new RandomItem();
-		s->randomize();
-		s->position = this->position;
-		randoms.push_back(s);
-	}
+PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ -20, -20, -20 }, { 20, 20, 20 }, &position) {
+	this->generated = 0;
 }
 
 PsychedelicWell::~PsychedelicWell() {
@@ -22,7 +17,6 @@ PsychedelicWell::~PsychedelicWell() {
 
 void PsychedelicWell::draw() {
 	glPushMatrix();
-	//glDisable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
@@ -30,7 +24,6 @@ void PsychedelicWell::draw() {
 		random->draw();
 
 	glDisable(GL_COLOR_MATERIAL);
-	//glDisable(GL_LIGHTING);
 	glPopMatrix();
 }
 
@@ -46,7 +39,13 @@ bool PsychedelicWell::withinBounds(glm::vec3 pos) {
 
 
 void PsychedelicWell::update() {
-	if (randoms.empty()) {
+	if (this->generated++ < RANDOM_ITEM_NO) {
+		RandomItem *s = new RandomItem();
+		s->randomize();
+		s->position = this->position;
+		randoms.push_back(s);
+	}
+	else if (randoms.empty()) {
 		return;
 	}
 	

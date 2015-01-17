@@ -15,8 +15,13 @@ AsteroidManager::AsteroidManager(char *filename, Score *scorePtr) {
 }
 
 AsteroidManager::~AsteroidManager() {
+	asteroids.erase(asteroids.begin(), asteroids.end());
 	this->mainModel->freeResources();
 	delete this->mainModel;
+}
+
+void AsteroidManager::erase() {
+	asteroids.erase(asteroids.begin(), asteroids.end());
 }
 
 void AsteroidManager::draw() {

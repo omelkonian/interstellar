@@ -28,7 +28,7 @@ void Sun::draw() {
 	//Inner Sphere	
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	float mat_specular[] = { 0.992157, 0.941176, 0.807843, 1.0 };
+	float mat_specular[] = { 0.7, 0.7, 0.7, 1.0 };
 	float mat_emission[] = { 1, 0.0, 0.0, 1.0 };
 
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);

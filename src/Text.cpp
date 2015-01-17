@@ -12,7 +12,7 @@ Text::Text(const char *text, float size, glm::vec3 position) {
 }
 
 Text::~Text() {
-	free(this->text);
+	//free(this->text);
 }
 
 void Text::draw() {

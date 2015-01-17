@@ -23,6 +23,8 @@ public:
 
 	void levelUp(int level);
 
+	void erase();
+
 	void drawBounds();
 
 private:
