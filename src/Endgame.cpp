@@ -1,10 +1,10 @@
 #include "Endgame.h"
 
-Endgame::Endgame(GLfloat ambientLight[4], GLfloat diffuseLight[4], GLfloat specularLight[4], GLfloat lightPos[4]) {
-	this->ambient[0] = ambientLight[0]; this->ambient[1] = ambientLight[1]; this->ambient[2] = ambientLight[2];
-	this->diffuse[0] = diffuseLight[0]; this->diffuse[1] = diffuseLight[1]; this->diffuse[2] = diffuseLight[2];
-	this->specular[0] = specularLight[0]; this->specular[1] = specularLight[1]; this->specular[2] = specularLight[2];
-	this->lightPos[0] = lightPos[0]; this->lightPos[1] = lightPos[1]; this->lightPos[2] = lightPos[2];
+Endgame::Endgame() {
+	this->ambient[0] = AMBIENT_RED; this->ambient[1] = AMBIENT_GREEN; this->ambient[2] = AMBIENT_BLUE;
+	this->diffuse[0] = DIFFUSE_RED; this->diffuse[1] = DIFFUSE_GREEN; this->diffuse[2] = DIFFUSE_BLUE;
+	this->specular[0] = SPECULAR_RED; this->specular[1] =SPECULAR_GREEN; this->specular[2] = SPECULAR_BLUE;
+	this->lightPos[0] = SUN_POSITION_X; this->lightPos[1] = SUN_POSITION_Y; this->lightPos[2] = SUN_POSITION_Z;
 	this->timesDarkened = 0;
 
 	this->quitText = new Text("Press Escape to quit game.", TEXT_SIZE, { -SPACESHIP_X, -SPACESHIP_Y, TEXT_Z });
@@ -82,5 +82,10 @@ long Endgame::getAge() {
 }
 
 void Endgame::restart() {
+	this->ambient[0] = AMBIENT_RED; this->ambient[1] = AMBIENT_GREEN; this->ambient[2] = AMBIENT_BLUE;
+	this->diffuse[0] = DIFFUSE_RED; this->diffuse[1] = DIFFUSE_GREEN; this->diffuse[2] = DIFFUSE_BLUE;
+	this->specular[0] = SPECULAR_RED; this->specular[1] = SPECULAR_GREEN; this->specular[2] = SPECULAR_BLUE;
+	this->lightPos[0] = SUN_POSITION_X; this->lightPos[1] = SUN_POSITION_Y; this->lightPos[2] = SUN_POSITION_Z;
+	this->timesDarkened = 0;
 	Setup();
 }

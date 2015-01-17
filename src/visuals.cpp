@@ -220,6 +220,17 @@ void Keyboard(unsigned char key, int x, int y)
 		paused = !paused;
 		break;
 	case ESCAPE:
+		// Free resources
+		delete ship;
+		delete asteroidManager;
+		delete stars;
+		delete sun;
+		delete environment;
+		delete globalBox;
+		delete level;
+		delete score;
+		delete levelManager;
+
 		exit(0);
 		break;
 	default:
@@ -302,15 +313,13 @@ void Setup()
 		level = new Level();
 		levelManager = new LevelManager(score);
 		asteroidManager = new AsteroidManager("resources/asteroid_2.obj", score);
-
+		endGame = new Endgame();
 
 		// Create light components
-		GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
-		GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
-		GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
-
-		endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
+		GLfloat ambientLight[] = { AMBIENT_RED, AMBIENT_GREEN, AMBIENT_BLUE, 1.0 };
+		GLfloat diffuseLight[] = { DIFFUSE_RED, DIFFUSE_GREEN, DIFFUSE_BLUE, 1.0 };
+		GLfloat specularLight[] = { SPECULAR_RED, SPECULAR_GREEN, SPECULAR_BLUE, 1.0 };
+		GLfloat position[] = { SUN_POSITION_X, SUN_POSITION_Y, SUN_POSITION_Z, 1.0 }; // Place light source inside the sun.		
 
 		glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
@@ -326,6 +335,7 @@ void Setup()
 		glFrontFace(GL_CCW);
 	}
 	else { // restarting
+		
 		// Song reset.
 		PlaySound(NULL, 0, 0);
 		PlaySound(TEXT("03. Hallways Of Always.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
@@ -341,22 +351,7 @@ void Setup()
 
 		// Lighting reset.
 		glDisable(GL_LIGHT1);
-		delete endGame;
-		GLfloat ambientLight[] = { 0.0, 0.0, 0.0, 1.0 };
-		GLfloat diffuseLight[] = { 1, 1, 1, 1.0 };
-		GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat position[] = { sun->position[0], sun->position[1], sun->position[2], 1.0f }; // Place light source inside the sun.
-
-		endGame = new Endgame(ambientLight, diffuseLight, specularLight, position);
-
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-		glLightfv(GL_LIGHT0, GL_POSITION, position);
-
-		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
-		glEnable(GL_NORMALIZE);
 
 		// Asteroid manager reset.
 		asteroidManager->asteroidSpeed = ASTEROID_INITIAL_SPEED;

@@ -1,4 +1,5 @@
 #include "Sun.h"
+#include "Defines.h"
 #include <iostream>
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace std;
 Sun::Sun() {
 	this->innerSphere = new ObjectModel("resources/sun.obj", "resources/sun.jpg");
 
-	this->position = { 50, 20, -60.0 };
+	this->position = { SUN_POSITION_X, SUN_POSITION_Y, SUN_POSITION_Z };
 	this->outerRadiusMin = 21.0;
 	this->outerRadiusMax = 23.0;
 	this->outerRadius = this->outerRadiusMin;

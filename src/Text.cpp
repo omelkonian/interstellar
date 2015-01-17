@@ -11,7 +11,9 @@ Text::Text(const char *text, float size, glm::vec3 position) {
 	this->color = { 1, 1, 1 };
 }
 
-Text::~Text() {}
+Text::~Text() {
+	free(this->text);
+}
 
 void Text::draw() {
 	glPushMatrix();

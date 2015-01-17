@@ -9,6 +9,7 @@
 #include "Environment.h"
 #include "Level.h"
 #include "Score.h"
+#include "Defines.h"
 
 class Endgame {
 public:
@@ -29,7 +30,7 @@ public:
 
 	void updateLighting();
 
-	Endgame(GLfloat ambient[4], GLfloat diffuse[4], GLfloat specular[4], GLfloat lightPos[4]);
+	Endgame();
 	~Endgame();
 
 	long getAge();

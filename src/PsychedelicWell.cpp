@@ -16,7 +16,9 @@ PsychedelicWell::PsychedelicWell(glm::vec3 pos) : position(pos), AABB({ 40, 40, 
 	}
 }
 
-PsychedelicWell::~PsychedelicWell() {}
+PsychedelicWell::~PsychedelicWell() {
+	randoms.erase(randoms.begin(), randoms.end());
+}
 
 void PsychedelicWell::draw() {
 	glPushMatrix();
@@ -24,9 +26,8 @@ void PsychedelicWell::draw() {
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	for (RandomItem *random : this->randoms) {
+	for (RandomItem *random : this->randoms) 
 		random->draw();
-	}
 
 	glDisable(GL_COLOR_MATERIAL);
 	//glDisable(GL_LIGHTING);
