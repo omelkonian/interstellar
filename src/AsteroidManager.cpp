@@ -76,8 +76,15 @@ void AsteroidManager::generate(glm::vec3 spaceshipPos) {
 	for (int i = 0; i < this->asteroidsPerGen; i++) {
 		Asteroid * a = new Asteroid(*this->mainModel);
 		a->randomize();
-		a->position.x = spaceshipPos.x + randFloat(-10, 10);
-		a->position.y = spaceshipPos.y + randFloat(-10, 10);
+		// If asteroids are few, keep them close to the spaceship.
+		if (this->asteroidsPerGen == 1) {
+			a->position.x = spaceshipPos.x + randFloat(-10, 10);
+			a->position.y = spaceshipPos.y + randFloat(-10, 10); 
+		}
+		else if (this->asteroidsPerGen == 2) {
+			a->position.x = spaceshipPos.x + randFloat(-30, 30);
+			a->position.y = spaceshipPos.y + randFloat(-30, 30);
+		}
 		a->updateBounds();
 		a->speed = { 0, 0, this->asteroidSpeed };
 		asteroids.push_back(a);
