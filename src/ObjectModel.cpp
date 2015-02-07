@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <assert.h>
 #include <sstream>
 
 
@@ -33,6 +34,7 @@ ObjectModel::ObjectModel(ObjectModel *cpy) : Model()
 
 ObjectModel::ObjectModel(const char * file, const char * texture) : Model()
 {
+	//printf("Constructing object from [%s] with texture [%s]\n", file, (texture != NULL) ? texture : "");
 	this->faces = this->normals = this->texels = this->vertices = 0;
 	this->preproccessFile(file);
 	this->faces *= 3;
@@ -44,7 +46,7 @@ ObjectModel::ObjectModel(const char * file, const char * texture) : Model()
 	this->_normals = (vec3*)malloc(this->faces * sizeof(vec3));
 	this->load_obj(file);
 	constructBounds();
-	this->texture = (this->texture) ? (loadTexture(texture)) : 0;
+	this->texture = (texture != NULL) ? (loadTexture(texture)) : 0;
 }
 
 void ObjectModel::freeResources() {
@@ -214,7 +216,9 @@ void ObjectModel::print() {
 GLuint ObjectModel::loadTexture(const char * textureName) {
 	unsigned char * image;
 	unsigned int texture;
+	printf("Loading texture [%s]\n", textureName);
 	image = SOIL_load_image(textureName, &width, &height, &channels, SOIL_LOAD_RGB);
+	assert(image != NULL);
 	glGenTextures(1, &texture);
 
 	// select our current texture

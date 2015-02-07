@@ -4,3 +4,6 @@ Debug/
 *.vcxproj
 *.vcxproj.filters
 *.sdf
+Release/
+*.psess
+*.vsp
